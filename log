@@ -1,0 +1,1869 @@
+i executed the strategy in different accounts with diff lots , i faced the descrepencies . attached the log . review it and share me your crisp analysis . 
+
+this is a neutral strategy , rolling short straddle strategy for every + or - 15% of ltp it exits and re enters new ATM. partial rolls pe and ce completed in lot3 and took new atm of 25950 where as the lot 1 price touches tips of it and fell back. that is also fine for us. but once the atm switched to 25900 and spot started to move to 26000 eventually where ever the strike and spot are equivalent the straddle will be more efficient . therefore lot1 was having atm of 26000 and spot moved towards 26000 . in case after triggering the 25950 atm in lot3 , if spot would have moved towards 25950 . lot3 would have benifited thus i feel this is pure luck
+
+lot3 log :
+
+[11:20:49] [PCT=15%] ✅ CE partial roll completed.
+
+Strategy MTM = CE -959.99 + PE -78.75 = -1038.74
+
+TOTAL MTM = -1038.74
+
+[11:20:59] [PCT=15%] 📊 Spot=25972.50 | ATM=25950 | CE ATM=25950 | CE=78.65 | PE ATM=26000 | PE=83.95 | Expiry=2025-12-16
+
+[11:20:59] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=-151.87
+
+[11:20:59] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=2058.75 | urmtom=0.00
+
+[11:20:59] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:20:59] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-225 | rpnl=0.00 | urmtom=-2137.50
+
+[11:20:59] [PCT=15%] 🔍 CE Change=-0.25% | PE Change=+15.24%
+
+
+
+
+
+[11:21:00] [PCT=15%] ✅ PE partial roll completed.
+
+Strategy MTM = CE -656.25 + PE -247.51 = -903.76
+
+TOTAL MTM = -903.76
+
+[11:21:11] [PCT=15%] 📊 Spot=25971.10 | ATM=25950 | CE ATM=25950 | CE=78.85 | PE ATM=25950 | PE=58.85 | Expiry=2025-12-16
+
+[11:21:11] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=28.12
+
+[11:21:11] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=-225 | rpnl=1783.12 | urmtom=16.87
+
+[11:21:11] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:21:11] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=0 | rpnl=-2047.50 | urmtom=0.00
+
+[11:21:11] [PCT=15%] 🔍 CE Change=+0.00% | PE Change=+0.17%
+
+
+
+
+
+Strategy MTM = CE -599.99 + PE -157.50 = -757.49
+
+TOTAL MTM = -757.49
+
+[11:21:21] [PCT=15%] 📊 Spot=25970.55 | ATM=25950 | CE ATM=25950 | CE=76.70 | PE ATM=25950 | PE=59.75 | Expiry=2025-12-16
+
+[11:21:21] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=84.38
+
+[11:21:21] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=-225 | rpnl=1783.12 | urmtom=106.88
+
+[11:21:21] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:21:21] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=0 | rpnl=-2047.50 | urmtom=0.00
+
+[11:21:21] [PCT=15%] 🔍 CE Change=-2.73% | PE Change=+1.70%
+
+
+
+
+
+Strategy MTM = CE -1117.49 + PE 213.74 = -903.75
+
+TOTAL MTM = -903.75
+
+[11:21:32] [PCT=15%] 📊 Spot=25970.95 | ATM=25950 | CE ATM=25950 | CE=78.45 | PE ATM=25950 | PE=58.80 | Expiry=2025-12-16
+
+[11:21:32] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=-433.12
+
+[11:21:32] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=-225 | rpnl=1783.12 | urmtom=478.12
+
+[11:21:32] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:21:32] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=0 | rpnl=-2047.50 | urmtom=0.00
+
+[11:21:32] [PCT=15%] 🔍 CE Change=-0.51% | PE Change=+0.09%
+
+
+
+
+
+Strategy MTM = CE -926.24 + PE -67.50 = -993.74
+
+TOTAL MTM = -993.74
+
+[11:21:42] [PCT=15%] 📊 Spot=25971.70 | ATM=25950 | CE ATM=25950 | CE=79.65 | PE ATM=25950 | PE=57.90 | Expiry=2025-12-16
+
+[11:21:42] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=-241.87
+
+[11:21:42] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=-225 | rpnl=1783.12 | urmtom=196.88
+
+[11:21:42] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:21:42] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=0 | rpnl=-2047.50 | urmtom=0.00
+
+[11:21:42] [PCT=15%] 🔍 CE Change=+1.01% | PE Change=-1.45%
+
+
+
+
+
+Strategy MTM = CE -667.49 + PE -146.26 = -813.75
+
+TOTAL MTM = -813.75
+
+[11:21:52] [PCT=15%] 📊 Spot=25971.10 | ATM=25950 | CE ATM=25950 | CE=79.20 | PE ATM=25950 | PE=58.60 | Expiry=2025-12-16
+
+[11:21:52] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=16.88
+
+[11:21:52] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=-225 | rpnl=1783.12 | urmtom=118.12
+
+[11:21:52] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:21:52] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=0 | rpnl=-2047.50 | urmtom=0.00
+
+[11:21:52] [PCT=15%] 🔍 CE Change=+0.44% | PE Change=-0.26%
+
+
+
+
+
+Strategy MTM = CE -509.99 + PE -303.76 = -813.75
+
+TOTAL MTM = -813.75
+
+[11:22:03] [PCT=15%] 📊 Spot=25970.20 | ATM=25950 | CE ATM=25950 | CE=77.15 | PE ATM=25950 | PE=59.80 | Expiry=2025-12-16
+
+[11:22:03] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=174.38
+
+[11:22:03] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=-225 | rpnl=1783.12 | urmtom=-39.38
+
+[11:22:03] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:22:03] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=0 | rpnl=-2047.50 | urmtom=0.00
+
+[11:22:03] [PCT=15%] 🔍 CE Change=-2.16% | PE Change=+1.79%
+
+
+
+
+
+Strategy MTM = CE -566.24 + PE -258.76 = -825.00
+
+TOTAL MTM = -825.00
+
+[11:22:13] [PCT=15%] 📊 Spot=25968.15 | ATM=25950 | CE ATM=25950 | CE=77.60 | PE ATM=25950 | PE=59.30 | Expiry=2025-12-16
+
+[11:22:13] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=118.13
+
+[11:22:13] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=-225 | rpnl=1783.12 | urmtom=5.62
+
+[11:22:13] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:22:13] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=0 | rpnl=-2047.50 | urmtom=0.00
+
+[11:22:13] [PCT=15%] 🔍 CE Change=-1.59% | PE Change=+0.94%
+
+
+
+
+
+Strategy MTM = CE -959.99 + PE 45.00 = -914.99
+
+TOTAL MTM = -982.50
+
+[11:22:24] [PCT=15%] 📊 Spot=25972.50 | ATM=25950 | CE ATM=25950 | CE=79.45 | PE ATM=25950 | PE=58.00 | Expiry=2025-12-16
+
+[11:22:24] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=-275.62
+
+[11:22:24] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=-225 | rpnl=1783.12 | urmtom=309.38
+
+[11:22:24] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:22:24] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=0 | rpnl=-2047.50 | urmtom=0.00
+
+[11:22:24] [PCT=15%] 🔍 CE Change=+0.76% | PE Change=-1.28%
+
+
+
+
+
+Strategy MTM = CE -892.49 + PE 33.74 = -858.75
+
+TOTAL MTM = -858.75
+
+[11:22:34] [PCT=15%] 📊 Spot=25972.35 | ATM=25950 | CE ATM=25950 | CE=79.40 | PE ATM=25950 | PE=58.05 | Expiry=2025-12-16
+
+[11:22:34] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=-208.12
+
+[11:22:34] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=-225 | rpnl=1783.12 | urmtom=253.12
+
+[11:22:34] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:22:34] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=0 | rpnl=-2047.50 | urmtom=0.00
+
+[11:22:34] [PCT=15%] 🔍 CE Change=+0.70% | PE Change=-1.19%
+
+
+
+
+
+Strategy MTM = CE -1488.74 + PE 303.74 = -1185.00
+
+TOTAL MTM = -1185.00
+
+[11:22:45] [PCT=15%] 📊 Spot=25973.05 | ATM=25950 | CE ATM=25950 | CE=80.25 | PE ATM=25950 | PE=57.85 | Expiry=2025-12-16
+
+[11:22:45] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=-804.37
+
+[11:22:45] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=-225 | rpnl=1783.12 | urmtom=568.12
+
+[11:22:45] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:22:45] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=0 | rpnl=-2047.50 | urmtom=0.00
+
+[11:22:45] [PCT=15%] 🔍 CE Change=+1.78% | PE Change=-1.53%
+
+
+
+
+
+Strategy MTM = CE -1432.49 + PE 258.74 = -1173.75
+
+TOTAL MTM = -1173.75
+
+[11:22:55] [PCT=15%] 📊 Spot=25972.55 | ATM=25950 | CE ATM=25950 | CE=80.95 | PE ATM=25950 | PE=57.55 | Expiry=2025-12-16
+
+[11:22:55] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=-748.12
+
+[11:22:55] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=-225 | rpnl=1783.12 | urmtom=523.12
+
+[11:22:55] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:22:55] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=0 | rpnl=-2047.50 | urmtom=0.00
+
+[11:22:55] [PCT=15%] 🔍 CE Change=+2.66% | PE Change=-2.04%
+
+
+
+
+
+Strategy MTM = CE -1241.24 + PE 157.50 = -1083.74
+
+TOTAL MTM = -1083.74
+
+[11:23:05] [PCT=15%] 📊 Spot=25973.45 | ATM=25950 | CE ATM=25950 | CE=80.80 | PE ATM=25950 | PE=57.50 | Expiry=2025-12-16
+
+[11:23:05] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=-556.87
+
+[11:23:05] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=-225 | rpnl=1783.12 | urmtom=421.88
+
+[11:23:05] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:23:05] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=0 | rpnl=-2047.50 | urmtom=0.00
+
+[11:23:05] [PCT=15%] 🔍 CE Change=+2.47% | PE Change=-2.13%
+
+
+
+
+
+Strategy MTM = CE -937.49 + PE -22.51 = -960.00
+
+TOTAL MTM = -960.00
+
+[11:23:16] [PCT=15%] 📊 Spot=25971.00 | ATM=25950 | CE ATM=25950 | CE=78.90 | PE ATM=25950 | PE=58.80 | Expiry=2025-12-16
+
+[11:23:16] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=-253.12
+
+[11:23:16] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=-225 | rpnl=1783.12 | urmtom=241.87
+
+[11:23:16] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:23:16] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=0 | rpnl=-2047.50 | urmtom=0.00
+
+[11:23:16] [PCT=15%] 🔍 CE Change=+0.06% | PE Change=+0.09%
+
+
+
+
+
+Strategy MTM = CE -791.24 + PE -123.76 = -915.00
+
+TOTAL MTM = -915.00
+
+[11:23:26] [PCT=15%] 📊 Spot=25970.40 | ATM=25950 | CE ATM=25950 | CE=79.00 | PE ATM=25950 | PE=58.70 | Expiry=2025-12-16
+
+[11:23:26] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=-106.87
+
+[11:23:26] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=-225 | rpnl=1783.12 | urmtom=140.62
+
+[11:23:26] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:23:26] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=0 | rpnl=-2047.50 | urmtom=0.00
+
+[11:23:26] [PCT=15%] 🔍 CE Change=+0.19% | PE Change=-0.09%
+
+
+
+
+
+Strategy MTM = CE -768.75 + PE -202.51 = -971.26
+
+TOTAL MTM = -971.26
+
+[11:23:37] [PCT=15%] 📊 Spot=25970.80 | ATM=25950 | CE ATM=25950 | CE=78.80 | PE ATM=25950 | PE=58.85 | Expiry=2025-12-16
+
+[11:23:37] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=-219.37
+
+[11:23:37] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=-225 | rpnl=1783.12 | urmtom=140.62
+
+[11:23:37] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:23:37] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=0 | rpnl=-2047.50 | urmtom=0.00
+
+[11:23:37] [PCT=15%] 🔍 CE Change=-0.06% | PE Change=+0.17%
+
+
+
+
+
+Strategy MTM = CE -959.99 + PE -11.26 = -971.25
+
+TOTAL MTM = -971.25
+
+[11:23:47] [PCT=15%] 📊 Spot=25970.55 | ATM=25950 | CE ATM=25950 | CE=79.05 | PE ATM=25950 | PE=58.65 | Expiry=2025-12-16
+
+[11:23:47] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=-275.62
+
+[11:23:47] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=-225 | rpnl=1783.12 | urmtom=253.12
+
+[11:23:47] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:23:47] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=0 | rpnl=-2047.50 | urmtom=0.00
+
+[11:23:47] [PCT=15%] 🔍 CE Change=+0.25% | PE Change=-0.17%
+
+
+
+
+
+Strategy MTM = CE -768.75 + PE -168.76 = -937.51
+
+TOTAL MTM = -937.51
+
+[11:23:58] [PCT=15%] 📊 Spot=25970.70 | ATM=25950 | CE ATM=25950 | CE=79.10 | PE ATM=25950 | PE=58.70 | Expiry=2025-12-16
+
+[11:23:58] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=-84.38
+
+[11:23:58] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=-225 | rpnl=1783.12 | urmtom=95.62
+
+[11:23:58] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:23:58] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=0 | rpnl=-2047.50 | urmtom=0.00
+
+[11:23:58] [PCT=15%] 🔍 CE Change=+0.32% | PE Change=-0.09%
+
+
+
+
+
+Strategy MTM = CE -1139.99 + PE 146.24 = -993.75
+
+TOTAL MTM = -993.75
+
+[11:24:08] [PCT=15%] 📊 Spot=25972.30 | ATM=25950 | CE ATM=25950 | CE=78.90 | PE ATM=25950 | PE=58.55 | Expiry=2025-12-16
+
+[11:24:08] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=-455.62
+
+[11:24:08] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=-225 | rpnl=1783.12 | urmtom=410.62
+
+[11:24:08] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:24:08] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=0 | rpnl=-2047.50 | urmtom=0.00
+
+[11:24:08] [PCT=15%] 🔍 CE Change=+0.06% | PE Change=-0.34%
+
+
+
+
+
+Strategy MTM = CE -1286.24 + PE 224.99 = -1061.25
+
+TOTAL MTM = -1061.25
+
+[11:24:18] [PCT=15%] 📊 Spot=25972.80 | ATM=25950 | CE ATM=25950 | CE=80.75 | PE ATM=25950 | PE=57.40 | Expiry=2025-12-16
+
+[11:24:18] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=-601.87
+
+[11:24:18] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=-225 | rpnl=1783.12 | urmtom=489.37
+
+[11:24:18] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:24:18] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=0 | rpnl=-2047.50 | urmtom=0.00
+
+[11:24:18] [PCT=15%] 🔍 CE Change=+2.41% | PE Change=-2.30%
+
+
+
+
+
+Strategy MTM = CE -1544.99 + PE 483.74 = -1061.25
+
+TOTAL MTM = -1016.24
+
+[11:24:29] [PCT=15%] 📊 Spot=25973.45 | ATM=26000 | CE ATM=25950 | CE=81.60 | PE ATM=25950 | PE=56.05 | Expiry=2025-12-16
+
+[11:24:29] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=-860.62
+
+[11:24:29] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=-225 | rpnl=1783.12 | urmtom=793.12
+
+[11:24:29] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:24:29] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=0 | rpnl=-2047.50 | urmtom=0.00
+
+[11:24:29] [PCT=15%] 🔍 CE Change=+3.49% | PE Change=-4.60%
+
+
+
+
+
+Strategy MTM = CE -1623.74 + PE 517.50 = -1106.24
+
+TOTAL MTM = -1106.24
+
+[11:24:39] [PCT=15%] 📊 Spot=25973.40 | ATM=26000 | CE ATM=25950 | CE=81.60 | PE ATM=25950 | PE=56.40 | Expiry=2025-12-16
+
+[11:24:39] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=-939.37
+
+[11:24:39] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=-225 | rpnl=1783.12 | urmtom=781.88
+
+[11:24:39] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:24:39] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=0 | rpnl=-2047.50 | urmtom=0.00
+
+[11:24:39] [PCT=15%] 🔍 CE Change=+3.49% | PE Change=-4.00%
+
+
+
+
+
+Strategy MTM = CE -1691.24 + PE 596.24 = -1095.00
+
+TOTAL MTM = -1095.00
+
+[11:24:50] [PCT=15%] 📊 Spot=25973.90 | ATM=25950 | CE ATM=25950 | CE=81.55 | PE ATM=25950 | PE=56.45 | Expiry=2025-12-16
+
+[11:24:50] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=-1006.87
+
+[11:24:50] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=-225 | rpnl=1783.12 | urmtom=860.62
+
+[11:24:50] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:24:50] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=0 | rpnl=-2047.50 | urmtom=0.00
+
+[11:24:50] [PCT=15%] 🔍 CE Change=+3.42% | PE Change=-3.91%
+
+
+
+
+
+Strategy MTM = CE -2174.99 + PE 1068.74 = -1106.25
+
+TOTAL MTM = -1106.25
+
+[11:25:00] [PCT=15%] 📊 Spot=25976.45 | ATM=26000 | CE ATM=25950 | CE=83.20 | PE ATM=25950 | PE=54.60 | Expiry=2025-12-16
+
+[11:25:00] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=-1423.12
+
+[11:25:00] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=-225 | rpnl=1783.12 | urmtom=1265.62
+
+[11:25:00] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:25:00] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=0 | rpnl=-2047.50 | urmtom=0.00
+
+[11:25:00] [PCT=15%] 🔍 CE Change=+5.52% | PE Change=-7.06%
+
+
+
+
+
+Strategy MTM = CE -2388.74 + PE 1192.50 = -1196.24
+
+TOTAL MTM = -1151.25
+
+[11:25:10] [PCT=15%] 📊 Spot=25980.25 | ATM=26000 | CE ATM=25950 | CE=86.45 | PE ATM=25950 | PE=52.30 | Expiry=2025-12-16
+
+[11:25:10] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=-1704.37
+
+[11:25:10] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=-225 | rpnl=1783.12 | urmtom=1456.88
+
+[11:25:10] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:25:10] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=0 | rpnl=-2047.50 | urmtom=0.00
+
+[11:25:10] [PCT=15%] 🔍 CE Change=+9.64% | PE Change=-10.98%
+
+
+
+
+
+Strategy MTM = CE -2782.49 + PE 1530.00 = -1252.49
+
+TOTAL MTM = -1252.49
+
+[11:25:21] [PCT=15%] 📊 Spot=25982.80 | ATM=26000 | CE ATM=25950 | CE=86.90 | PE ATM=25950 | PE=52.00 | Expiry=2025-12-16
+
+[11:25:21] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=-2098.12
+
+[11:25:21] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=-225 | rpnl=1783.12 | urmtom=1794.38
+
+[11:25:21] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:25:21] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=0 | rpnl=-2047.50 | urmtom=0.00
+
+[11:25:21] [PCT=15%] 🔍 CE Change=+10.21% | PE Change=-11.49%
+
+
+
+
+
+Strategy MTM = CE -2737.49 + PE 1349.99 = -1387.50
+
+TOTAL MTM = -1387.50
+
+[11:25:31] [PCT=15%] 📊 Spot=25983.45 | ATM=26000 | CE ATM=25950 | CE=86.25 | PE ATM=25950 | PE=52.50 | Expiry=2025-12-16
+
+[11:25:31] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=-2053.12
+
+[11:25:31] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=-225 | rpnl=1783.12 | urmtom=1614.37
+
+[11:25:31] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:25:31] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=0 | rpnl=-2047.50 | urmtom=0.00
+
+[11:25:31] [PCT=15%] 🔍 CE Change=+9.38% | PE Change=-10.64%
+
+
+
+
+
+Strategy MTM = CE -2174.99 + PE 899.99 = -1275.00
+
+TOTAL MTM = -1275.00
+
+[11:25:41] [PCT=15%] 📊 Spot=25981.80 | ATM=26000 | CE ATM=25950 | CE=84.95 | PE ATM=25950 | PE=54.00 | Expiry=2025-12-16
+
+[11:25:41] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=-1490.62
+
+[11:25:41] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=-225 | rpnl=1783.12 | urmtom=1164.37
+
+[11:25:41] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:25:41] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=0 | rpnl=-2047.50 | urmtom=0.00
+
+[11:25:41] [PCT=15%] 🔍 CE Change=+7.74% | PE Change=-8.09%
+
+
+
+
+
+Strategy MTM = CE -2118.75 + PE 776.24 = -1342.51
+
+TOTAL MTM = -1252.50
+
+[11:25:52] [PCT=15%] 📊 Spot=25980.60 | ATM=26000 | CE ATM=25950 | CE=84.85 | PE ATM=25950 | PE=54.50 | Expiry=2025-12-16
+
+[11:25:52] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=-1434.38
+
+[11:25:52] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=-225 | rpnl=1783.12 | urmtom=1040.62
+
+[11:25:52] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:25:52] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=0 | rpnl=-2047.50 | urmtom=0.00
+
+[11:25:52] [PCT=15%] 🔍 CE Change=+7.61% | PE Change=-7.23%
+
+
+
+
+
+Strategy MTM = CE -2264.99 + PE 888.74 = -1376.25
+
+TOTAL MTM = -1376.25
+
+[11:26:02] [PCT=15%] 📊 Spot=25981.50 | ATM=26000 | CE ATM=25950 | CE=84.35 | PE ATM=25950 | PE=54.65 | Expiry=2025-12-16
+
+[11:26:02] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=-1580.62
+
+[11:26:02] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=-225 | rpnl=1783.12 | urmtom=1153.12
+
+[11:26:02] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:26:02] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=0 | rpnl=-2047.50 | urmtom=0.00
+
+[11:26:02] [PCT=15%] 🔍 CE Change=+6.98% | PE Change=-6.98%
+
+
+
+
+
+Strategy MTM = CE -2163.74 + PE 809.99 = -1353.75
+
+TOTAL MTM = -1353.75
+
+[11:26:13] [PCT=15%] 📊 Spot=25981.60 | ATM=26000 | CE ATM=25950 | CE=84.05 | PE ATM=25950 | PE=55.15 | Expiry=2025-12-16
+
+[11:26:13] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=-1479.37
+
+[11:26:13] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=-225 | rpnl=1783.12 | urmtom=1074.37
+
+[11:26:13] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:26:13] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=0 | rpnl=-2047.50 | urmtom=0.00
+
+[11:26:13] [PCT=15%] 🔍 CE Change=+6.59% | PE Change=-6.13%
+
+
+
+
+
+Strategy MTM = CE -2354.99 + PE 877.49 = -1477.50
+
+TOTAL MTM = -1477.50
+
+[11:26:23] [PCT=15%] 📊 Spot=25980.75 | ATM=26000 | CE ATM=25950 | CE=85.70 | PE ATM=25950 | PE=54.00 | Expiry=2025-12-16
+
+[11:26:23] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=-1670.62
+
+[11:26:23] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=-225 | rpnl=1783.12 | urmtom=1141.87
+
+[11:26:23] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:26:23] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=0 | rpnl=-2047.50 | urmtom=0.00
+
+[11:26:23] [PCT=15%] 🔍 CE Change=+8.69% | PE Change=-8.09%
+
+
+
+Strategy MTM = CE -2186.24 + PE 866.24 = -1320.00
+
+TOTAL MTM = -1320.00
+
+[11:26:34] [PCT=15%] 📊 Spot=25981.05 | ATM=26000 | CE ATM=25950 | CE=84.45 | PE ATM=25950 | PE=54.55 | Expiry=2025-12-16
+
+[11:26:34] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=-1501.87
+
+[11:26:34] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=-225 | rpnl=1783.12 | urmtom=1130.62
+
+[11:26:34] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:26:34] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=0 | rpnl=-2047.50 | urmtom=0.00
+
+[11:26:34] [PCT=15%] 🔍 CE Change=+7.10% | PE Change=-7.15%
+
+
+
+
+
+Strategy MTM = CE -2174.99 + PE 877.49 = -1297.50
+
+TOTAL MTM = -1320.00
+
+[11:26:44] [PCT=15%] 📊 Spot=25980.70 | ATM=26000 | CE ATM=25950 | CE=84.75 | PE ATM=25950 | PE=54.35 | Expiry=2025-12-16
+
+[11:26:44] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=-1490.62
+
+[11:26:44] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=-225 | rpnl=1783.12 | urmtom=1141.87
+
+[11:26:44] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:26:44] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=0 | rpnl=-2047.50 | urmtom=0.00
+
+[11:26:44] [PCT=15%] 🔍 CE Change=+7.48% | PE Change=-7.49%
+
+
+
+
+
+Strategy MTM = CE -2861.24 + PE 1428.74 = -1432.50
+
+TOTAL MTM = -1432.50
+
+[11:26:54] [PCT=15%] 📊 Spot=25981.80 | ATM=26000 | CE ATM=25950 | CE=86.15 | PE ATM=25950 | PE=53.00 | Expiry=2025-12-16
+
+[11:26:54] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=-2176.87
+
+[11:26:54] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=-225 | rpnl=1783.12 | urmtom=1693.12
+
+[11:26:54] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:26:54] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=0 | rpnl=-2047.50 | urmtom=0.00
+
+[11:26:54] [PCT=15%] 🔍 CE Change=+9.26% | PE Change=-9.79%
+
+
+
+
+
+Strategy MTM = CE -2748.74 + PE 1327.49 = -1421.25
+
+TOTAL MTM = -1421.25
+
+[11:27:05] [PCT=15%] 📊 Spot=25980.90 | ATM=26000 | CE ATM=25950 | CE=86.60 | PE ATM=25950 | PE=52.75 | Expiry=2025-12-16
+
+[11:27:05] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=-2064.37
+
+[11:27:05] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=-225 | rpnl=1783.12 | urmtom=1591.87
+
+[11:27:05] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:27:05] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=0 | rpnl=-2047.50 | urmtom=0.00
+
+[11:27:05] [PCT=15%] 🔍 CE Change=+9.83% | PE Change=-10.21%
+
+
+
+
+
+Strategy MTM = CE -2973.74 + PE 1541.24 = -1432.50
+
+TOTAL MTM = -1432.50
+
+[11:27:15] [PCT=15%] 📊 Spot=25982.20 | ATM=26000 | CE ATM=25950 | CE=88.65 | PE ATM=25950 | PE=51.05 | Expiry=2025-12-16
+
+[11:27:15] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=-2289.37
+
+[11:27:15] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=-225 | rpnl=1783.12 | urmtom=1805.62
+
+[11:27:15] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:27:15] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=0 | rpnl=-2047.50 | urmtom=0.00
+
+[11:27:15] [PCT=15%] 🔍 CE Change=+12.43% | PE Change=-13.11%
+
+
+
+
+
+Strategy MTM = CE -3288.74 + PE 1811.25 = -1477.49
+
+TOTAL MTM = -1477.49
+
+[11:27:25] [PCT=15%] 📊 Spot=25984.45 | ATM=26000 | CE ATM=25950 | CE=88.75 | PE ATM=25950 | PE=50.80 | Expiry=2025-12-16
+
+[11:27:25] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=-2604.37
+
+[11:27:25] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=-225 | rpnl=1783.12 | urmtom=2075.63
+
+[11:27:25] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:27:25] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=0 | rpnl=-2047.50 | urmtom=0.00
+
+[11:27:25] [PCT=15%] 🔍 CE Change=+12.56% | PE Change=-13.53%
+
+
+
+
+
+Strategy MTM = CE -3592.49 + PE 2171.24 = -1421.25
+
+TOTAL MTM = -1421.25
+
+[11:27:36] [PCT=15%] 📊 Spot=25986.20 | ATM=26000 | CE ATM=25950 | CE=89.80 | PE ATM=25950 | PE=49.90 | Expiry=2025-12-16
+
+[11:27:36] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=-2908.12
+
+[11:27:36] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=-225 | rpnl=1783.12 | urmtom=2435.62
+
+[11:27:36] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:27:36] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=0 | rpnl=-2047.50 | urmtom=0.00
+
+[11:27:36] [PCT=15%] 🔍 CE Change=+13.89% | PE Change=-15.06%
+
+
+
+
+
+[11:27:37] [PCT=15%] ✅ PE partial roll completed.
+
+Strategy MTM = CE -3952.49 + PE 2542.50 = -1409.99
+
+TOTAL MTM = -1409.99
+
+[11:27:47] [PCT=15%] 📊 Spot=25988.10 | ATM=26000 | CE ATM=25950 | CE=92.20 | PE ATM=26000 | PE=69.15 | Expiry=2025-12-16
+
+[11:27:47] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=-225 | rpnl=-2653.12 | urmtom=-3256.87
+
+[11:27:47] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=4286.25 | urmtom=0.00
+
+[11:27:47] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=0 | rpnl=1968.75 | urmtom=0.00
+
+[11:27:47] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-225 | rpnl=-2486.25 | urmtom=742.50
+
+[11:27:47] [PCT=15%] 🔍 CE Change=+16.93% | PE Change=-3.89%
+
+
+
+
+
+[11:27:48] [PCT=15%] ✅ CE partial roll completed.
+
+Strategy MTM = CE -3513.75 + PE 2137.50 = -1376.25
+
+TOTAL MTM = -1376.25
+
+[11:27:59] [PCT=15%] 📊 Spot=25987.05 | ATM=26000 | CE ATM=26000 | CE=62.25 | PE ATM=26000 | PE=70.90 | Expiry=2025-12-16
+
+[11:27:59] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-5595.00 | urmtom=0.00
+
+[11:27:59] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=4286.25 | urmtom=0.00
+
+[11:27:59] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-225 | rpnl=2030.62 | urmtom=50.63
+
+[11:27:59] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-225 | rpnl=-2486.25 | urmtom=337.50
+
+[11:27:59] [PCT=15%] 🔍 CE Change=-2.81% | PE Change=-1.46%
+
+
+
+
+
+Strategy MTM = CE -3423.76 + PE 1878.75 = -1545.01
+
+TOTAL MTM = -1511.26
+
+[11:28:09] [PCT=15%] 📊 Spot=25987.25 | ATM=26000 | CE ATM=26000 | CE=61.80 | PE ATM=26000 | PE=71.95 | Expiry=2025-12-16
+
+[11:28:09] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-5595.00 | urmtom=0.00
+
+[11:28:09] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=4286.25 | urmtom=0.00
+
+[11:28:09] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-225 | rpnl=2030.62 | urmtom=140.62
+
+[11:28:09] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-225 | rpnl=-2486.25 | urmtom=78.75
+
+[11:28:09] [PCT=15%] 🔍 CE Change=-3.51% | PE Change=+0.00%
+
+
+
+
+
+Strategy MTM = CE -3648.76 + PE 2103.75 = -1545.01
+
+TOTAL MTM = -1545.01
+
+[11:28:20] [PCT=15%] 📊 Spot=25987.30 | ATM=26000 | CE ATM=26000 | CE=63.05 | PE ATM=26000 | PE=71.00 | Expiry=2025-12-16
+
+[11:28:20] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-5595.00 | urmtom=0.00
+
+[11:28:20] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=4286.25 | urmtom=0.00
+
+[11:28:20] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-225 | rpnl=2030.62 | urmtom=-84.38
+
+[11:28:20] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-225 | rpnl=-2486.25 | urmtom=303.75
+
+[11:28:20] [PCT=15%] 🔍 CE Change=-1.56% | PE Change=-1.32%
+
+
+
+
+
+Strategy MTM = CE -3896.25 + PE 2430.00 = -1466.25
+
+TOTAL MTM = -1466.25
+
+[11:28:30] [PCT=15%] 📊 Spot=25989.00 | ATM=26000 | CE ATM=26000 | CE=63.90 | PE ATM=26000 | PE=69.50 | Expiry=2025-12-16
+
+[11:28:30] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-5595.00 | urmtom=0.00
+
+[11:28:30] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=4286.25 | urmtom=0.00
+
+[11:28:30] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-225 | rpnl=2030.62 | urmtom=-331.87
+
+[11:28:30] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-225 | rpnl=-2486.25 | urmtom=630.00
+
+[11:28:30] [PCT=15%] 🔍 CE Change=-0.23% | PE Change=-3.41%
+
+
+
+
+
+Strategy MTM = CE -4053.75 + PE 2643.75 = -1410.00
+
+TOTAL MTM = -1410.00
+
+[11:28:40] [PCT=15%] 📊 Spot=25992.35 | ATM=26000 | CE ATM=26000 | CE=65.00 | PE ATM=26000 | PE=68.40 | Expiry=2025-12-16
+
+[11:28:40] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-5595.00 | urmtom=0.00
+
+[11:28:40] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=4286.25 | urmtom=0.00
+
+[11:28:40] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-225 | rpnl=2030.62 | urmtom=-489.37
+
+[11:28:40] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-225 | rpnl=-2486.25 | urmtom=843.75
+
+[11:28:40] [PCT=15%] 🔍 CE Change=+1.48% | PE Change=-4.93%
+
+
+
+
+
+Strategy MTM = CE -3918.76 + PE 2576.25 = -1342.51
+
+TOTAL MTM = -1342.51
+
+[11:28:51] [PCT=15%] 📊 Spot=25991.45 | ATM=26000 | CE ATM=26000 | CE=64.15 | PE ATM=26000 | PE=68.75 | Expiry=2025-12-16
+
+[11:28:51] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-5595.00 | urmtom=0.00
+
+[11:28:51] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=4286.25 | urmtom=0.00
+
+[11:28:51] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-225 | rpnl=2030.62 | urmtom=-354.38
+
+[11:28:51] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-225 | rpnl=-2486.25 | urmtom=776.25
+
+[11:28:51] [PCT=15%] 🔍 CE Change=+0.16% | PE Change=-4.45%
+
+lot1 log :
+
+
+
+
+
+Strategy MTM = CE -401.25 + PE 60.00 = -341.25
+
+TOTAL MTM = -375.00
+
+[11:20:04] [PCT=15%] 📊 Spot=25975.95 | ATM=25950 | CE ATM=26000 | CE=55.15 | PE ATM=26000 | PE=82.60 | Expiry=2025-12-16
+
+[11:20:04] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:20:04] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:20:04] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=547.50
+
+[11:20:04] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-686.25
+
+[11:20:04] [PCT=15%] 🔍 CE Change=-10.47% | PE Change=+10.50%
+
+
+
+
+
+Strategy MTM = CE -416.25 + PE 86.25 = -330.00
+
+TOTAL MTM = -367.50
+
+[11:20:14] [PCT=15%] 📊 Spot=25976.50 | ATM=25950 | CE ATM=26000 | CE=55.10 | PE ATM=26000 | PE=82.45 | Expiry=2025-12-16
+
+[11:20:14] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:20:14] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:20:14] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=532.50
+
+[11:20:14] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-660.00
+
+[11:20:14] [PCT=15%] 🔍 CE Change=-10.55% | PE Change=+10.30%
+
+
+
+
+
+Strategy MTM = CE -363.75 + PE 45.00 = -318.75
+
+TOTAL MTM = -356.25
+
+[11:20:25] [PCT=15%] 📊 Spot=25975.60 | ATM=25950 | CE ATM=26000 | CE=54.60 | PE ATM=26000 | PE=83.10 | Expiry=2025-12-16
+
+[11:20:25] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:20:25] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:20:25] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=585.00
+
+[11:20:25] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-701.25
+
+[11:20:25] [PCT=15%] 🔍 CE Change=-11.36% | PE Change=+11.17%
+
+
+
+
+
+Strategy MTM = CE -285.00 + PE -33.75 = -318.75
+
+TOTAL MTM = -360.00
+
+[11:20:35] [PCT=15%] 📊 Spot=25973.60 | ATM=25950 | CE ATM=26000 | CE=54.00 | PE ATM=26000 | PE=83.60 | Expiry=2025-12-16
+
+[11:20:35] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:20:35] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:20:35] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=663.75
+
+[11:20:35] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-780.00
+
+[11:20:35] [PCT=15%] 🔍 CE Change=-12.34% | PE Change=+11.84%
+
+
+
+
+
+Strategy MTM = CE -378.75 + PE 131.25 = -247.50
+
+TOTAL MTM = -288.75
+
+[11:20:46] [PCT=15%] 📊 Spot=25973.50 | ATM=25950 | CE ATM=26000 | CE=52.90 | PE ATM=26000 | PE=84.40 | Expiry=2025-12-16
+
+[11:20:46] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:20:46] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:20:46] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=570.00
+
+[11:20:46] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-615.00
+
+[11:20:46] [PCT=15%] 🔍 CE Change=-14.12% | PE Change=+12.91%
+
+
+
+
+
+Strategy MTM = CE -303.75 + PE 3.75 = -300.00
+
+TOTAL MTM = -341.25
+
+[11:20:56] [PCT=15%] 📊 Spot=25972.45 | ATM=25950 | CE ATM=26000 | CE=53.95 | PE ATM=26000 | PE=83.35 | Expiry=2025-12-16
+
+[11:20:56] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:20:56] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:20:56] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=645.00
+
+[11:20:56] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-742.50
+
+[11:20:56] [PCT=15%] 🔍 CE Change=-12.42% | PE Change=+11.51%
+
+
+
+
+
+Strategy MTM = CE -303.75 + PE 0.00 = -303.75
+
+TOTAL MTM = -345.00
+
+[11:21:07] [PCT=15%] 📊 Spot=25972.65 | ATM=25950 | CE ATM=26000 | CE=53.40 | PE ATM=26000 | PE=83.65 | Expiry=2025-12-16
+
+[11:21:07] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:21:07] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:21:07] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=645.00
+
+[11:21:07] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-746.25
+
+[11:21:07] [PCT=15%] 🔍 CE Change=-13.31% | PE Change=+11.91%
+
+
+
+
+
+Strategy MTM = CE -187.50 + PE -82.50 = -270.00
+
+TOTAL MTM = -345.00
+
+[11:21:17] [PCT=15%] 📊 Spot=25969.75 | ATM=25950 | CE ATM=26000 | CE=53.15 | PE ATM=26000 | PE=84.60 | Expiry=2025-12-16
+
+[11:21:17] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:21:17] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:21:17] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=761.25
+
+[11:21:17] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-828.75
+
+[11:21:17] [PCT=15%] 🔍 CE Change=-13.72% | PE Change=+13.18%
+
+
+
+
+
+Strategy MTM = CE -277.50 + PE -33.75 = -311.25
+
+TOTAL MTM = -360.00
+
+[11:21:27] [PCT=15%] 📊 Spot=25971.55 | ATM=25950 | CE ATM=26000 | CE=52.40 | PE ATM=26000 | PE=84.55 | Expiry=2025-12-16
+
+[11:21:27] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:21:27] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:21:27] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=671.25
+
+[11:21:27] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-780.00
+
+[11:21:27] [PCT=15%] 🔍 CE Change=-14.94% | PE Change=+13.11%
+
+
+
+
+
+Strategy MTM = CE -367.50 + PE 52.50 = -315.00
+
+TOTAL MTM = -356.25
+
+[11:21:38] [PCT=15%] 📊 Spot=25971.65 | ATM=25950 | CE ATM=26000 | CE=54.35 | PE ATM=26000 | PE=82.40 | Expiry=2025-12-16
+
+[11:21:38] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:21:38] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:21:38] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=577.50
+
+[11:21:38] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-686.25
+
+[11:21:38] [PCT=15%] 🔍 CE Change=-11.77% | PE Change=+10.23%
+
+
+
+
+
+Strategy MTM = CE -337.50 + PE 15.00 = -322.50
+
+TOTAL MTM = -367.50
+
+[11:21:48] [PCT=15%] 📊 Spot=25971.20 | ATM=25950 | CE ATM=26000 | CE=53.95 | PE ATM=26000 | PE=83.65 | Expiry=2025-12-16
+
+[11:21:48] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:21:48] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:21:48] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=611.25
+
+[11:21:48] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-731.25
+
+[11:21:48] [PCT=15%] 🔍 CE Change=-12.42% | PE Change=+11.91%
+
+
+
+
+
+Strategy MTM = CE -221.25 + PE -93.75 = -315.00
+
+TOTAL MTM = -363.75
+
+[11:21:58] [PCT=15%] 📊 Spot=25968.70 | ATM=25950 | CE ATM=26000 | CE=52.40 | PE ATM=26000 | PE=85.05 | Expiry=2025-12-16
+
+[11:21:58] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:21:58] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:21:58] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=727.50
+
+[11:21:58] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-840.00
+
+[11:21:58] [PCT=15%] 🔍 CE Change=-14.94% | PE Change=+13.78%
+
+
+
+
+
+Strategy MTM = CE -277.50 + PE -30.00 = -307.50
+
+TOTAL MTM = -356.25
+
+[11:22:09] [PCT=15%] 📊 Spot=25969.10 | ATM=25950 | CE ATM=26000 | CE=53.70 | PE ATM=26000 | PE=83.70 | Expiry=2025-12-16
+
+[11:22:09] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:22:09] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:22:09] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=678.75
+
+[11:22:09] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-780.00
+
+[11:22:09] [PCT=15%] 🔍 CE Change=-12.82% | PE Change=+11.97%
+
+
+
+
+
+Strategy MTM = CE -307.50 + PE 22.50 = -285.00
+
+TOTAL MTM = -330.00
+
+[11:22:19] [PCT=15%] 📊 Spot=25972.50 | ATM=25950 | CE ATM=26000 | CE=53.50 | PE ATM=26000 | PE=83.65 | Expiry=2025-12-16
+
+[11:22:19] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:22:19] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:22:19] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=641.25
+
+[11:22:19] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-723.75
+
+[11:22:19] [PCT=15%] 🔍 CE Change=-13.15% | PE Change=+11.91%
+
+
+
+
+
+Strategy MTM = CE -345.00 + PE 63.75 = -281.25
+
+TOTAL MTM = -326.25
+
+[11:22:30] [PCT=15%] 📊 Spot=25972.45 | ATM=25950 | CE ATM=26000 | CE=54.15 | PE ATM=26000 | PE=82.90 | Expiry=2025-12-16
+
+[11:22:30] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:22:30] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:22:30] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=603.75
+
+[11:22:30] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-682.50
+
+[11:22:30] [PCT=15%] 🔍 CE Change=-12.09% | PE Change=+10.90%
+
+
+
+
+
+Strategy MTM = CE -378.75 + PE 63.75 = -315.00
+
+TOTAL MTM = -356.25
+
+[11:22:40] [PCT=15%] 📊 Spot=25972.75 | ATM=25950 | CE ATM=26000 | CE=54.35 | PE ATM=26000 | PE=83.00 | Expiry=2025-12-16
+
+[11:22:40] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:22:40] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:22:40] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=570.00
+
+[11:22:40] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-682.50
+
+[11:22:40] [PCT=15%] 🔍 CE Change=-11.77% | PE Change=+11.04%
+
+
+
+
+
+Strategy MTM = CE -427.50 + PE 135.00 = -292.50
+
+TOTAL MTM = -337.50
+
+[11:22:51] [PCT=15%] 📊 Spot=25972.80 | ATM=25950 | CE ATM=26000 | CE=55.35 | PE ATM=26000 | PE=81.75 | Expiry=2025-12-16
+
+[11:22:51] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:22:51] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:22:51] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=521.25
+
+[11:22:51] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-611.25
+
+[11:22:51] [PCT=15%] 🔍 CE Change=-10.15% | PE Change=+9.36%
+
+
+
+
+
+Strategy MTM = CE -453.75 + PE 138.75 = -315.00
+
+TOTAL MTM = -360.00
+
+[11:23:01] [PCT=15%] 📊 Spot=25972.85 | ATM=25950 | CE ATM=26000 | CE=55.50 | PE ATM=26000 | PE=81.75 | Expiry=2025-12-16
+
+[11:23:01] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:23:01] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:23:01] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=495.00
+
+[11:23:01] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-607.50
+
+[11:23:01] [PCT=15%] 🔍 CE Change=-9.90% | PE Change=+9.36%
+
+
+
+
+
+Strategy MTM = CE -322.50 + PE 7.50 = -315.00
+
+TOTAL MTM = -367.50
+
+[11:23:12] [PCT=15%] 📊 Spot=25971.75 | ATM=25950 | CE ATM=26000 | CE=54.10 | PE ATM=26000 | PE=83.50 | Expiry=2025-12-16
+
+[11:23:12] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:23:12] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:23:12] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=626.25
+
+[11:23:12] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-738.75
+
+[11:23:12] [PCT=15%] 🔍 CE Change=-12.18% | PE Change=+11.71%
+
+
+
+
+
+Strategy MTM = CE -277.50 + PE -41.25 = -318.75
+
+TOTAL MTM = -375.00
+
+[11:23:22] [PCT=15%] 📊 Spot=25970.70 | ATM=25950 | CE ATM=26000 | CE=53.40 | PE ATM=26000 | PE=83.90 | Expiry=2025-12-16
+
+[11:23:22] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:23:22] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:23:22] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=671.25
+
+[11:23:22] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-780.00
+
+[11:23:22] [PCT=15%] 🔍 CE Change=-13.31% | PE Change=+12.24%
+
+
+
+
+
+Strategy MTM = CE -311.25 + PE -26.25 = -337.50
+
+TOTAL MTM = -382.50
+
+[11:23:32] [PCT=15%] 📊 Spot=25971.30 | ATM=25950 | CE ATM=26000 | CE=53.65 | PE ATM=26000 | PE=84.00 | Expiry=2025-12-16
+
+[11:23:32] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:23:32] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:23:32] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=637.50
+
+[11:23:32] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-772.50
+
+[11:23:32] [PCT=15%] 🔍 CE Change=-12.91% | PE Change=+12.37%
+
+
+
+
+
+Strategy MTM = CE -330.00 + PE 18.75 = -311.25
+
+TOTAL MTM = -360.00
+
+[11:23:43] [PCT=15%] 📊 Spot=25971.80 | ATM=25950 | CE ATM=26000 | CE=53.10 | PE ATM=26000 | PE=84.30 | Expiry=2025-12-16
+
+[11:23:43] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:23:43] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:23:43] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=618.75
+
+[11:23:43] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-727.50
+
+[11:23:43] [PCT=15%] 🔍 CE Change=-13.80% | PE Change=+12.78%
+
+
+
+
+
+Strategy MTM = CE -300.00 + PE -18.75 = -318.75
+
+TOTAL MTM = -367.50
+
+[11:23:53] [PCT=15%] 📊 Spot=25970.75 | ATM=25950 | CE ATM=26000 | CE=53.90 | PE ATM=26000 | PE=83.55 | Expiry=2025-12-16
+
+[11:23:53] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:23:53] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:23:53] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=648.75
+
+[11:23:53] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-765.00
+
+[11:23:53] [PCT=15%] 🔍 CE Change=-12.50% | PE Change=+11.77%
+
+
+
+
+
+Strategy MTM = CE -315.00 + PE -7.50 = -322.50
+
+TOTAL MTM = -356.25
+
+[11:24:03] [PCT=15%] 📊 Spot=25970.40 | ATM=25950 | CE ATM=26000 | CE=53.80 | PE ATM=26000 | PE=83.50 | Expiry=2025-12-16
+
+[11:24:03] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:24:03] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:24:03] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=633.75
+
+[11:24:03] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-753.75
+
+[11:24:03] [PCT=15%] 🔍 CE Change=-12.66% | PE Change=+11.71%
+
+
+
+
+
+Strategy MTM = CE -427.50 + PE 131.25 = -296.25
+
+TOTAL MTM = -345.00
+
+[11:24:14] [PCT=15%] 📊 Spot=25972.60 | ATM=25950 | CE ATM=26000 | CE=55.20 | PE ATM=26000 | PE=82.10 | Expiry=2025-12-16
+
+[11:24:14] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:24:14] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:24:14] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=521.25
+
+[11:24:14] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-615.00
+
+[11:24:14] [PCT=15%] 🔍 CE Change=-10.39% | PE Change=+9.83%
+
+
+
+
+
+Strategy MTM = CE -442.50 + PE 150.00 = -292.50
+
+TOTAL MTM = -337.50
+
+[11:24:24] [PCT=15%] 📊 Spot=25973.10 | ATM=25950 | CE ATM=26000 | CE=55.15 | PE ATM=26000 | PE=82.20 | Expiry=2025-12-16
+
+[11:24:24] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:24:24] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:24:24] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=506.25
+
+[11:24:24] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-596.25
+
+[11:24:24] [PCT=15%] 🔍 CE Change=-10.47% | PE Change=+9.97%
+
+
+
+
+
+Strategy MTM = CE -476.25 + PE 217.50 = -258.75
+
+TOTAL MTM = -296.25
+
+[11:24:35] [PCT=15%] 📊 Spot=25973.35 | ATM=25950 | CE ATM=26000 | CE=55.65 | PE ATM=26000 | PE=81.05 | Expiry=2025-12-16
+
+[11:24:35] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:24:35] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:24:35] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=472.50
+
+[11:24:35] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-528.75
+
+[11:24:35] [PCT=15%] 🔍 CE Change=-9.66% | PE Change=+8.43%
+
+
+
+
+
+Strategy MTM = CE -480.00 + PE 206.25 = -273.75
+
+TOTAL MTM = -303.75
+
+[11:24:45] [PCT=15%] 📊 Spot=25974.25 | ATM=26000 | CE ATM=26000 | CE=55.95 | PE ATM=26000 | PE=80.65 | Expiry=2025-12-16
+
+[11:24:45] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:24:45] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:24:45] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=468.75
+
+[11:24:45] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-540.00
+
+[11:24:45] [PCT=15%] 🔍 CE Change=-9.17% | PE Change=+7.89%
+
+
+
+
+
+Strategy MTM = CE -573.75 + PE 382.50 = -191.25
+
+TOTAL MTM = -225.00
+
+[11:24:56] [PCT=15%] 📊 Spot=25976.45 | ATM=26000 | CE ATM=26000 | CE=57.00 | PE ATM=26000 | PE=78.95 | Expiry=2025-12-16
+
+[11:24:56] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:24:56] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:24:56] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=375.00
+
+[11:24:56] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-363.75
+
+[11:24:56] [PCT=15%] 🔍 CE Change=-7.47% | PE Change=+5.62%
+
+
+
+
+
+Strategy MTM = CE -693.75 + PE 528.75 = -165.00
+
+TOTAL MTM = -180.00
+
+[11:25:06] [PCT=15%] 📊 Spot=25978.15 | ATM=26000 | CE ATM=26000 | CE=58.55 | PE ATM=26000 | PE=77.00 | Expiry=2025-12-16
+
+[11:25:06] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:25:06] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:25:06] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=255.00
+
+[11:25:06] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-217.50
+
+[11:25:06] [PCT=15%] 🔍 CE Change=-4.95% | PE Change=+3.01%
+
+
+
+
+
+Strategy MTM = CE -776.25 + PE 607.50 = -168.75
+
+TOTAL MTM = -191.25
+
+[11:25:16] [PCT=15%] 📊 Spot=25982.35 | ATM=26000 | CE ATM=26000 | CE=59.55 | PE ATM=26000 | PE=76.20 | Expiry=2025-12-16
+
+[11:25:16] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:25:16] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:25:16] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=172.50
+
+[11:25:16] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-138.75
+
+[11:25:16] [PCT=15%] 🔍 CE Change=-3.33% | PE Change=+1.94%
+
+
+
+
+
+Strategy MTM = CE -806.25 + PE 615.00 = -191.25
+
+TOTAL MTM = -213.75
+
+[11:25:27] [PCT=15%] 📊 Spot=25982.30 | ATM=26000 | CE ATM=26000 | CE=59.70 | PE ATM=26000 | PE=75.95 | Expiry=2025-12-16
+
+[11:25:27] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:25:27] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:25:27] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=142.50
+
+[11:25:27] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-131.25
+
+[11:25:27] [PCT=15%] 🔍 CE Change=-3.08% | PE Change=+1.61%
+
+
+
+
+
+Strategy MTM = CE -682.50 + PE 438.75 = -243.75
+
+TOTAL MTM = -273.75
+
+[11:25:37] [PCT=15%] 📊 Spot=25981.30 | ATM=26000 | CE ATM=26000 | CE=60.60 | PE ATM=26000 | PE=75.50 | Expiry=2025-12-16
+
+[11:25:37] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:25:37] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:25:37] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=266.25
+
+[11:25:37] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-307.50
+
+[11:25:37] [PCT=15%] 🔍 CE Change=-1.62% | PE Change=+1.00%
+
+
+
+
+
+Strategy MTM = CE -712.50 + PE 435.00 = -277.50
+
+TOTAL MTM = -307.50
+
+[11:25:48] [PCT=15%] 📊 Spot=25981.85 | ATM=26000 | CE ATM=26000 | CE=59.00 | PE ATM=26000 | PE=77.60 | Expiry=2025-12-16
+
+[11:25:48] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:25:48] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:25:48] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=236.25
+
+[11:25:48] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-311.25
+
+[11:25:48] [PCT=15%] 🔍 CE Change=-4.22% | PE Change=+3.81%
+
+
+
+
+
+Strategy MTM = CE -671.25 + PE 405.00 = -266.25
+
+TOTAL MTM = -285.00
+
+[11:25:58] [PCT=15%] 📊 Spot=25981.20 | ATM=26000 | CE ATM=26000 | CE=57.70 | PE ATM=26000 | PE=79.10 | Expiry=2025-12-16
+
+[11:25:58] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:25:58] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:25:58] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=277.50
+
+[11:25:58] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-341.25
+
+[11:25:58] [PCT=15%] 🔍 CE Change=-6.33% | PE Change=+5.82%
+
+
+
+
+
+Strategy MTM = CE -641.25 + PE 345.00 = -296.25
+
+TOTAL MTM = -326.25
+
+[11:26:08] [PCT=15%] 📊 Spot=25980.45 | ATM=26000 | CE ATM=26000 | CE=58.90 | PE ATM=26000 | PE=78.15 | Expiry=2025-12-16
+
+[11:26:08] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:26:08] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:26:08] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=307.50
+
+[11:26:08] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-401.25
+
+[11:26:08] [PCT=15%] 🔍 CE Change=-4.38% | PE Change=+4.55%
+
+
+
+
+
+Strategy MTM = CE -678.75 + PE 412.50 = -266.25
+
+TOTAL MTM = -292.50
+
+[11:26:19] [PCT=15%] 📊 Spot=25979.90 | ATM=26000 | CE ATM=26000 | CE=58.85 | PE ATM=26000 | PE=77.90 | Expiry=2025-12-16
+
+[11:26:19] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:26:19] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:26:19] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=270.00
+
+[11:26:19] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-333.75
+
+[11:26:19] [PCT=15%] 🔍 CE Change=-4.46% | PE Change=+4.21%
+
+
+
+
+
+Strategy MTM = CE -645.00 + PE 390.00 = -255.00
+
+TOTAL MTM = -285.00
+
+[11:26:29] [PCT=15%] 📊 Spot=25979.35 | ATM=26000 | CE ATM=26000 | CE=58.25 | PE ATM=26000 | PE=78.85 | Expiry=2025-12-16
+
+[11:26:29] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:26:29] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:26:29] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=303.75
+
+[11:26:29] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-356.25
+
+[11:26:29] [PCT=15%] 🔍 CE Change=-5.44% | PE Change=+5.48%
+
+
+
+
+
+Strategy MTM = CE -656.25 + PE 427.50 = -228.75
+
+TOTAL MTM = -262.50
+
+[11:26:39] [PCT=15%] 📊 Spot=25980.35 | ATM=26000 | CE ATM=26000 | CE=58.60 | PE ATM=26000 | PE=77.70 | Expiry=2025-12-16
+
+[11:26:39] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:26:39] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:26:39] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=292.50
+
+[11:26:39] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-318.75
+
+[11:26:39] [PCT=15%] 🔍 CE Change=-4.87% | PE Change=+3.95%
+
+
+
+
+
+Strategy MTM = CE -697.50 + PE 487.50 = -210.00
+
+TOTAL MTM = -251.25
+
+[11:26:50] [PCT=15%] 📊 Spot=25980.75 | ATM=26000 | CE ATM=26000 | CE=58.65 | PE ATM=26000 | PE=77.65 | Expiry=2025-12-16
+
+[11:26:50] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:26:50] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:26:50] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=251.25
+
+[11:26:50] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-258.75
+
+[11:26:50] [PCT=15%] 🔍 CE Change=-4.79% | PE Change=+3.88%
+
+
+
+
+
+Strategy MTM = CE -765.00 + PE 540.00 = -225.00
+
+TOTAL MTM = -247.50
+
+[11:27:00] [PCT=15%] 📊 Spot=25981.10 | ATM=26000 | CE ATM=26000 | CE=60.10 | PE ATM=26000 | PE=75.70 | Expiry=2025-12-16
+
+[11:27:00] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:27:00] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:27:00] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=183.75
+
+[11:27:00] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-206.25
+
+[11:27:00] [PCT=15%] 🔍 CE Change=-2.44% | PE Change=+1.27%
+
+
+
+
+
+Strategy MTM = CE -810.00 + PE 645.00 = -165.00
+
+TOTAL MTM = -183.75
+
+[11:27:11] [PCT=15%] 📊 Spot=25981.95 | ATM=26000 | CE ATM=26000 | CE=60.30 | PE ATM=26000 | PE=75.55 | Expiry=2025-12-16
+
+[11:27:11] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:27:11] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:27:11] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=138.75
+
+[11:27:11] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=-101.25
+
+[11:27:11] [PCT=15%] 🔍 CE Change=-2.11% | PE Change=+1.07%
+
+
+
+
+
+Strategy MTM = CE -881.25 + PE 753.75 = -127.50
+
+TOTAL MTM = -142.50
+
+[11:27:21] [PCT=15%] 📊 Spot=25984.10 | ATM=26000 | CE ATM=26000 | CE=61.20 | PE ATM=26000 | PE=73.75 | Expiry=2025-12-16
+
+[11:27:21] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:27:21] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:27:21] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=67.50
+
+[11:27:21] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=7.50
+
+[11:27:21] [PCT=15%] 🔍 CE Change=-0.65% | PE Change=-1.34%
+
+
+
+
+
+Strategy MTM = CE -922.50 + PE 821.25 = -101.25
+
+TOTAL MTM = -116.25
+
+[11:27:32] [PCT=15%] 📊 Spot=25985.00 | ATM=26000 | CE ATM=26000 | CE=62.00 | PE ATM=26000 | PE=72.45 | Expiry=2025-12-16
+
+[11:27:32] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:27:32] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:27:32] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=26.25
+
+[11:27:32] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=75.00
+
+[11:27:32] [PCT=15%] 🔍 CE Change=+0.65% | PE Change=-3.08%
+
+
+
+
+
+Strategy MTM = CE -1005.00 + PE 982.50 = -22.50
+
+TOTAL MTM = -30.00
+
+[11:27:42] [PCT=15%] 📊 Spot=25986.75 | ATM=26000 | CE ATM=26000 | CE=63.00 | PE ATM=26000 | PE=70.55 | Expiry=2025-12-16
+
+[11:27:42] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:27:42] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:27:42] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=-56.25
+
+[11:27:42] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=247.50
+
+[11:27:42] [PCT=15%] 🔍 CE Change=+2.27% | PE Change=-5.62%
+
+
+
+
+
+Strategy MTM = CE -986.25 + PE 1012.50 = 26.25
+
+TOTAL MTM = 7.50
+
+[11:27:52] [PCT=15%] 📊 Spot=25989.25 | ATM=26000 | CE ATM=26000 | CE=63.55 | PE ATM=26000 | PE=69.45 | Expiry=2025-12-16
+
+[11:27:52] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:27:52] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:27:52] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=-37.50
+
+[11:27:52] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=266.25
+
+[11:27:52] [PCT=15%] 🔍 CE Change=+3.17% | PE Change=-7.09%
+
+
+
+
+
+Strategy MTM = CE -915.00 + PE 911.25 = -3.75
+
+TOTAL MTM = -67.50
+
+[11:28:03] [PCT=15%] 📊 Spot=25987.45 | ATM=26000 | CE ATM=26000 | CE=62.25 | PE ATM=26000 | PE=70.90 | Expiry=2025-12-16
+
+[11:28:03] [PCT=15%] 💰 NIFTY16DEC25C25950 | netqty=0 | rpnl=-948.75 | urmtom=0.00
+
+[11:28:03] [PCT=15%] 💰 NIFTY16DEC25P25950 | netqty=0 | rpnl=746.25 | urmtom=0.00
+
+[11:28:03] [PCT=15%] 💰 NIFTY16DEC25C26000 | netqty=-75 | rpnl=0.00 | urmtom=33.75
+
+[11:28:03] [PCT=15%] 💰 NIFTY16DEC25P26000 | netqty=-75 | rpnl=0.00 | urmtom=165.00
+
+[11:28:03] [PCT=15%] 🔍 CE Change=+1.06% | PE Change=-5.15%
