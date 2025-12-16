@@ -1,6 +1,6 @@
-here is my current code :
+auto pick expiry is not working on this code : fix the issue and safely remove the .csv format picking logic as its not required. 
 
-according to this 
+
 
 #!/usr/bin/env python3
 # multi_pct_sensex_straddle_roll_monitor_fixed_atm.py (Flattrade + Broker MTM, all config inline)
