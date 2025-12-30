@@ -263,6 +263,16 @@ def flattrade_fetch_positionbook() -> List[dict]:
     resp = ft_post("PositionBook", jdata)
     return resp if isinstance(resp, list) else []
 
+def ft_get_order_book() -> List[dict]:
+    jdata = {"uid": FT_UID, "actid": FT_ACTID}
+    resp = ft_post("OrderBook", jdata)
+    return resp if isinstance(resp, list) else []
+
+def ft_get_trade_book() -> List[dict]:
+    jdata = {"uid": FT_UID, "actid": FT_ACTID}
+    resp = ft_post("TradeBook", jdata)
+    return resp if isinstance(resp, list) else []
+
 # =====================
 # SYMBOL HELPERS (internal symbol ↔ Flattrade tsym)
 # Ensure these are defined before StrategyContext to avoid NameErrors
@@ -671,69 +681,43 @@ def _broker_netqty_for_tsym(tsym: str) -> int:
         pass
     return 0
 
-def verify_entry_and_squareoff_if_needed(ctx: "StrategyContext", ce_internal: str, pe_internal: str, logfile_path: str, wait_seconds: float = 1.0) -> bool:
-    """
-    Verify PositionBook shows expected netqty for CE and PE after an attempted entry.
-    If either leg is not fully net-short (exact expected size), emergency-exit any filled legs,
-    mark ctx.terminated and return False. Otherwise return True.
-    """
+# =====================
+# OUR-ORDERS TRACKING (by norenordno) — robust against multi-strategy conflicts
+# =====================
+
+def _extract_order_id_from_resp(raw: dict) -> Optional[str]:
     try:
-        # resolve Flattrade tsym names once
-        ts_ce = str(ctx.tsym_map.get(ce_internal) or tsym_from_internal(ce_internal)).upper() if ce_internal else None
-        ts_pe = str(ctx.tsym_map.get(pe_internal) or tsym_from_internal(pe_internal)).upper() if pe_internal else None
+        oid = raw.get("norenordno") or raw.get("orderid")
+        return str(oid) if oid else None
+    except Exception:
+        return None
 
-        # expected absolute units per leg
-        expected_units = -int(STRADDLE_LOTS) * int(get_lot_size(SYMBOL))
-
-        # poll for a short window to allow broker to reflect fills
-        deadline = time.time() + max(1.0, float(wait_seconds))
-        last_ce = last_pe = None
-        while time.time() < deadline:
-            net_ce = _broker_netqty_for_tsym(ts_ce) if ts_ce else 0
-            net_pe = _broker_netqty_for_tsym(ts_pe) if ts_pe else 0
-            last_ce, last_pe = net_ce, net_pe
-            if net_ce == expected_units and net_pe == expected_units:
-                return True
-            time.sleep(0.3)
-
-        # Final read after polling
-        net_ce = _broker_netqty_for_tsym(ts_ce) if ts_ce else 0
-        net_pe = _broker_netqty_for_tsym(ts_pe) if ts_pe else 0
-
-        # If either leg is not at the exact expected short size, treat as failed entry.
-        if net_ce != expected_units or net_pe != expected_units:
-            ctx.log(f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ⚠️ Entry verification mismatch:"
-                    f" CE netqty={net_ce} (exp {expected_units}) | PE netqty={net_pe} (exp {expected_units})."
-                    f" Emergency square-off of any filled legs.")
-            ctx.log_to_file(logfile_path,
-                f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ⚠️ Entry verification mismatch:"
-                f" CE netqty={net_ce} (exp {expected_units}) | PE netqty={net_pe} (exp {expected_units})."
-                f" Emergency square-off of any filled legs.")
-
-            # emergency exit any partially-filled positions belonging to this context
-            for instr in list(ctx.positions.keys()):
-                try:
-                    ctx.exit_instrument_until_success(instr, label="entry-mismatch-exit")
-                except Exception as e:
-                    ctx.log(f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ⚠️ Emergency exit failed for {instr}: {e}")
-                    ctx.log_to_file(logfile_path, f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ⚠️ Emergency exit failed for {instr}: {e}")
-
-            # clear local state and prevent re-entry
-            ctx.in_position = False
-            ctx.ce_strike = ctx.pe_strike = None
-            ctx.ce_entry_price = ctx.pe_entry_price = None
-            ctx.terminated = True
-            ctx.log(f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ℹ️ Context terminated for the day after entry mismatch.")
-            ctx.log_to_file(logfile_path, f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ℹ️ Context terminated for the day after entry mismatch.")
-            return False
-
-        # exact match
-        return True
-
-    except Exception as ex:
-        ctx.log(f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ⚠️ Exception during entry verification: {ex}")
-        ctx.log_to_file(logfile_path, f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ⚠️ Exception during entry verification: {ex}")
-        return False
+def _our_net_for_tsym(ctx: "StrategyContext", tsym: str) -> int:
+    """
+    Sum our TradeBook fills for this tsym using our known order IDs.
+    Sells subtract qty, buys add qty. Returns net units (not lots).
+    """
+    if not tsym:
+        return 0
+    try:
+        tb = ft_get_trade_book()
+        net = 0
+        for t in tb:
+            oid = str(t.get("norenordno") or t.get("orderid") or "")
+            if not oid or oid not in ctx.our_order_ids:
+                continue
+            ts = str(t.get("tsym", "")).upper()
+            if ts != str(tsym).upper():
+                continue
+            trantype = str(t.get("trantype", "")).upper()
+            qty = int(float(t.get("qty") or t.get("fillshares") or t.get("fillQty") or 0))
+            if trantype == "B":
+                net += qty
+            elif trantype == "S":
+                net -= qty
+        return net
+    except Exception:
+        return 0
 
 # =====================
 # BROKER MTM (PositionBook) scoped to this strategy
@@ -847,6 +831,8 @@ class StrategyContext:
         self.tsym_map: Dict[str, str] = {}
         # NEW: when True, the context will not enter again for this run (stop/target hit)
         self.terminated: bool = False
+        # NEW: robust multi-strategy isolation — track our order IDs (norenordno)
+        self.our_order_ids: set[str] = set()
 
     def log(self, msg: str): print(msg)
     def log_to_file(self, logfile_path, msg: str): write_logfile_entry(logfile_path, f"{msg}\n")
@@ -878,6 +864,10 @@ class StrategyContext:
                 try:
                     qty = self.positions.get(instr, {}).get("quantity", STRADDLE_LOTS)
                     (ok_exit, _, text_exit, raw_exit), tsym = broker_send_buy(self.webhook_url, instr, qty, label="margin-exit")
+                    # Track our exit order ID if present
+                    oid_exit = _extract_order_id_from_resp(raw_exit or {})
+                    if oid_exit:
+                        self.our_order_ids.add(oid_exit)
                     if ok_exit:
                         self.log(f"[{nowstr()}] [PCT={self.trigger_pct:g}%] ✅ Emergency exit placed for {instr} (tsym={tsym}).")
                         # remove local tracking for this instrument
@@ -898,28 +888,35 @@ class StrategyContext:
 
     def exit_instrument_until_success(self, instrument: str, entry_price_for_mtm: Optional[float] = None, label: str = "exit"):
         """
-        Before placing a buy (exit) order, check broker PositionBook for that instrument's netqty.
-        If broker already shows netqty == 0 for that tsym, treat as already closed and clean local state
-        without placing a buy. This prevents creating an unintended buy if the leg was never filled.
+        Before placing a buy (exit) order, check our TradeBook net for that instrument's tsym.
+        If our_net == 0 for that tsym, treat as already closed and clean local state without placing a buy.
+        This prevents creating an unintended buy if the leg was never filled or already closed elsewhere.
         """
         # resolve tsym as broker sees it
         tsym = self.tsym_map.get(instrument) or tsym_from_internal(instrument)
-        broker_net = _broker_netqty_for_tsym(tsym) if tsym else None
-        if broker_net == 0:
-            # already closed on broker side; update local state and return
+        # Use our own TradeBook-based net to decide
+        our_net_units = _our_net_for_tsym(self, tsym) if tsym else 0
+        if our_net_units == 0:
+            # already flat on our orders; update local state and return
             self.positions.pop(instrument, None)
             self.ledger.add(instrument)
             if instrument.endswith("C"):
                 self.ce_strike = None; self.ce_entry_price = None
             elif instrument.endswith("P"):
                 self.pe_strike = None; self.pe_entry_price = None
-            self.log(f"[{nowstr()}] [PCT={self.trigger_pct:g}%] ℹ️ Broker already shows netqty=0 for {tsym}; skipping exit order and clearing local tracking.")
+            self.log(f"[{nowstr()}] [PCT={self.trigger_pct:g}%] ℹ️ Our net=0 for {tsym}; skipping exit order and clearing local tracking.")
             return True
 
-        lots = self.positions.get(instrument, {}).get("quantity", STRADDLE_LOTS)
+        # Exit only our own net; convert units to lots
+        lot_size = get_lot_size(SYMBOL)
+        exit_lots = max(1, int(abs(our_net_units) // lot_size))
         attempt = 1
         while True:
-            (ok, status, text, raw), tsym_resp = broker_send_buy(self.webhook_url, instrument, lots, f"{label} (attempt {attempt})")
+            (ok, status, text, raw), tsym_resp = broker_send_buy(self.webhook_url, instrument, exit_lots, f"{label} (attempt {attempt})")
+            # Track our exit order ID if present
+            oid_exit = _extract_order_id_from_resp(raw or {})
+            if oid_exit:
+                self.our_order_ids.add(oid_exit)
             if ok:
                 self.positions.pop(instrument, None)
                 if instrument.endswith("C"):
@@ -947,6 +944,10 @@ class StrategyContext:
         attempt = 1
         while True:
             (ok, status, text, raw), tsym = broker_send_sell(self.webhook_url, instrument, lots, f"{label} (attempt {attempt})")
+            # Track our entry order ID if present
+            oid_entry = _extract_order_id_from_resp(raw or {})
+            if oid_entry:
+                self.our_order_ids.add(oid_entry)
             if ok:
                 self.positions[instrument] = {"side": "S", "entry_price": entry_price if entry_price is not None else 0.0, "quantity": lots, "mtm": 0.0}
                 strike_extracted = extract_strike_from_symbol(instrument)
@@ -974,6 +975,13 @@ class StrategyContext:
             pe_instr = build_option_symbol(SYMBOL, expiry_raw, pe_strike, "P")
             (ok_ce, _, text_ce, raw_ce), tsym_ce = broker_send_sell(self.webhook_url, ce_instr, lots, f"entry-straddle-CE (attempt {attempt})")
             (ok_pe, _, text_pe, raw_pe), tsym_pe = broker_send_sell(self.webhook_url, pe_instr, lots, f"entry-straddle-PE (attempt {attempt})")
+            # Track our entry order IDs if present
+            oid_ce = _extract_order_id_from_resp(raw_ce or {})
+            oid_pe = _extract_order_id_from_resp(raw_pe or {})
+            if oid_ce:
+                self.our_order_ids.add(oid_ce)
+            if oid_pe:
+                self.our_order_ids.add(oid_pe)
             if ok_ce and ok_pe:
                 self.positions[ce_instr] = {"side": "S", "entry_price": ce_entry_price if ce_entry_price is not None else 0.0, "quantity": lots, "mtm": 0.0}
                 self.positions[pe_instr] = {"side": "S", "entry_price": pe_entry_price if pe_entry_price is not None else 0.0, "quantity": lots, "mtm": 0.0}
@@ -996,6 +1004,76 @@ class StrategyContext:
                 return False
             self.log(f"[{nowstr()}] [PCT={self.trigger_pct:g}%] ❌ entry-straddle failed; retrying in 3s... (CE:{text_ce} | PE:{text_pe})")
             time.sleep(3); attempt += 1
+
+# =====================
+# ENTRY VERIFICATION (OUR-ORDERS ONLY)
+# =====================
+
+def verify_entry_and_squareoff_if_needed(ctx: "StrategyContext", ce_internal: str, pe_internal: str, logfile_path: str, wait_seconds: float = 1.0) -> bool:
+    """
+    Verify our TradeBook shows expected net units (negative for short) for CE and PE after an attempted entry.
+    If either leg is not at exact expected short size, emergency-exit any filled legs, mark ctx.terminated and return False.
+    Otherwise return True.
+
+    This verification is based ONLY on our order IDs (norenordno) and is robust against other strategies/products.
+    """
+    try:
+        # resolve Flattrade tsym names once
+        ts_ce = str(ctx.tsym_map.get(ce_internal) or tsym_from_internal(ce_internal)).upper() if ce_internal else None
+        ts_pe = str(ctx.tsym_map.get(pe_internal) or tsym_from_internal(pe_internal)).upper() if pe_internal else None
+
+        # expected absolute units per leg (short = negative)
+        expected_units = -int(STRADDLE_LOTS) * int(get_lot_size(SYMBOL))
+
+        # poll for a short window to allow broker to reflect our TradeBook fills
+        deadline = time.time() + max(1.0, float(wait_seconds))
+        last_ce = last_pe = None
+        while time.time() < deadline:
+            net_ce = _our_net_for_tsym(ctx, ts_ce) if ts_ce else 0
+            net_pe = _our_net_for_tsym(ctx, ts_pe) if ts_pe else 0
+            last_ce, last_pe = net_ce, net_pe
+            if net_ce == expected_units and net_pe == expected_units:
+                return True
+            time.sleep(0.3)
+
+        # Final read after polling
+        net_ce = _our_net_for_tsym(ctx, ts_ce) if ts_ce else 0
+        net_pe = _our_net_for_tsym(ctx, ts_pe) if ts_pe else 0
+
+        # If either leg is not at the exact expected short size, treat as failed entry.
+        if net_ce != expected_units or net_pe != expected_units:
+            ctx.log(f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ⚠️ Entry verification mismatch (our orders):"
+                    f" CE our_net={net_ce} (exp {expected_units}) | PE our_net={net_pe} (exp {expected_units})."
+                    f" Emergency square-off of any filled legs.")
+            ctx.log_to_file(logfile_path,
+                f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ⚠️ Entry verification mismatch (our orders):"
+                f" CE our_net={net_ce} (exp {expected_units}) | PE our_net={net_pe} (exp {expected_units})."
+                f" Emergency square-off of any filled legs.")
+
+            # emergency exit any partially-filled positions belonging to this context
+            for instr in list(ctx.positions.keys()):
+                try:
+                    ctx.exit_instrument_until_success(instr, label="entry-mismatch-exit")
+                except Exception as e:
+                    ctx.log(f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ⚠️ Emergency exit failed for {instr}: {e}")
+                    ctx.log_to_file(logfile_path, f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ⚠️ Emergency exit failed for {instr}: {e}")
+
+            # clear local state and prevent re-entry
+            ctx.in_position = False
+            ctx.ce_strike = ctx.pe_strike = None
+            ctx.ce_entry_price = ctx.pe_entry_price = None
+            ctx.terminated = True
+            ctx.log(f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ℹ️ Context terminated for the day after entry mismatch.")
+            ctx.log_to_file(logfile_path, f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ℹ️ Context terminated for the day after entry mismatch.")
+            return False
+
+        # exact match
+        return True
+
+    except Exception as ex:
+        ctx.log(f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ⚠️ Exception during entry verification: {ex}")
+        ctx.log_to_file(logfile_path, f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ⚠️ Exception during entry verification: {ex}")
+        return False
 
 # =====================
 # MAIN LOOP
@@ -1292,3 +1370,4 @@ if __name__ == "__main__":
         print("No strategies enabled in STRATEGIES — uncomment entries to enable tests.")
     else:
         main_loop(active_contexts)
+
