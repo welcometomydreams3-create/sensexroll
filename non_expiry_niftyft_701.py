@@ -38,15 +38,13 @@ HOLD_TIME_MINUTES = 1
 REQUIRE_ATM_CHANGE = True
 
 # Stop/Target thresholds (per-lot)
-STOPLOSS_PER_LOT = 12000.0
+STOPLOSS_PER_LOT = 2000.0
 TARGET_PER_LOT   = 6000.0
 
-# NEW flag:
 # If True, stoploss/target are applied to TOTAL MTM (account-wide).
 # If False (default), stoploss/target apply to STRATEGY MTM (running + closed positions of the strategy scope).
 STOP_TARGET_ON_TOTAL = False
 
-# NEW flag:
 # If True (default), when the script starts it will "baseline" existing PositionBook values
 # and compute Strategy MTM as the change since script start (fresh MTM). This prevents previously
 # closed P&L from terminating the strategy immediately. If False, strategy MTM will include historical closed positions.
@@ -56,6 +54,8 @@ IGNORE_PAST_STRATEGY_POSITIONS = True
 LOG_STYLE = "classic"        # "classic" or "single"
 SHOW_MTM_ROWS = True         # True: show per-symbol netqty|rpnl|urmtom rows
 
+# IMPORTANT: isolate MTM/logging to only OUR strategy orders (ignore other strategies)
+ISOLATE_BY_OUR_ORDERS = True
 
 
 # override FT_UID/FT_ACTID/FT_JKEY from flattrade token file if available
@@ -82,8 +82,6 @@ except Exception:
     pass
 
 # Upstox option chain access
-# Option 1 (simple): paste today's access token
-# Option 1: manual daily access token (leave blank to load from file)
 UPSTOX_ACCESS_TOKEN = ""   # paste token if you want to override
 
 # Static app credentials (not overridden by token file)
@@ -138,8 +136,7 @@ SELECTED_EXPIRY = EXPIRY_DATE
 BASELINE_PB_MAP: Dict[str, float] = {}
 
 # =====================
-# Margin detection helpers (minimal, additive)
-# - These are intentionally small and non-invasive.
+# Margin detection helpers
 # =====================
 _MARGIN_KEYWORDS = [
     "margin", "shortfall", "insufficient", "insufficient funds",
@@ -148,28 +145,19 @@ _MARGIN_KEYWORDS = [
 ]
 
 def _extract_broker_message(resp_or_text) -> str:
-    """
-    Return a best-effort human message from either a response dict or string.
-    Works with flattrade responses that use keys like 'emsg','message','error','err'.
-    """
     try:
         if isinstance(resp_or_text, dict):
             for k in ("emsg", "message", "error", "err", "stat", "status"):
                 v = resp_or_text.get(k)
                 if v:
                     return str(v)
-            # fallback: return textual representation of dict
             return str(resp_or_text)
         else:
-            # if it's already text
             return str(resp_or_text)
     except Exception:
         return str(resp_or_text)
 
 def _is_margin_error(resp_or_text) -> bool:
-    """
-    Return True if any known margin keyword appears in the provided response text or dict.
-    """
     txt = _extract_broker_message(resp_or_text).lower()
     for kw in _MARGIN_KEYWORDS:
         if kw in txt:
@@ -212,13 +200,10 @@ def write_logfile_entry(logpath, entry: str):
         print(f"[{nowstr()}] ⚠️ Could not write to log file: {e}")
 
 # =====================
-# FLATTRADE TRANSPORT (proven: form-encoded jData JSON + jKey)
+# FLATTRADE TRANSPORT (form-encoded jData JSON + jKey)
 # =====================
 
 def ft_post(endpoint: str, jdata: dict) -> dict:
-    """
-    Flattrade Pi: send jData JSON string and jKey as form fields (x-www-form-urlencoded).
-    """
     import json as pyjson
     url = f"{FLATTRADE_BASE_URL}/{endpoint}"
     body = f'jData={pyjson.dumps(jdata, separators=(",", ":"))}&jKey={FT_JKEY}'
@@ -235,9 +220,6 @@ def ft_post(endpoint: str, jdata: dict) -> dict:
         return {"stat": "Not_Ok", "emsg": str(e)}
 
 def flattrade_place_order(tsym: str, qty_units: int, trantype: str, prctyp: str = "MKT", prc: Optional[float] = None, label: str = "") -> dict:
-    """
-    PlaceOrder wrapper (tsym should be Flattrade trading symbol). For MKT, prc must be "0".
-    """
     jdata = {
         "uid": FT_UID,
         "actid": FT_ACTID,
@@ -256,9 +238,6 @@ def flattrade_place_order(tsym: str, qty_units: int, trantype: str, prctyp: str 
     return resp
 
 def flattrade_fetch_positionbook() -> List[dict]:
-    """
-    Returns list of positions from Flattrade PositionBook, or [] on failure.
-    """
     jdata = {"uid": FT_UID, "actid": FT_ACTID}
     resp = ft_post("PositionBook", jdata)
     return resp if isinstance(resp, list) else []
@@ -275,7 +254,6 @@ def ft_get_trade_book() -> List[dict]:
 
 # =====================
 # SYMBOL HELPERS (internal symbol ↔ Flattrade tsym)
-# Ensure these are defined before StrategyContext to avoid NameErrors
 # =====================
 
 def expiry_to_yymmdd(raw_expiry: str) -> str:
@@ -292,7 +270,6 @@ def expiry_to_yymmdd(raw_expiry: str) -> str:
         return raw_expiry
 
 def build_option_symbol(symbol: str, expiry_raw: str, strike: int, opt_type: str) -> str:
-    # Internal key used by strategy state: SYMBOL + yymmdd + [C|P] + strike
     yymmdd = expiry_to_yymmdd(expiry_raw)
     strike_str = str(int(strike))
     return f"{symbol}{yymmdd}{opt_type}{strike_str}"
@@ -308,13 +285,12 @@ def extract_strike_from_symbol(instrument: str) -> Optional[int]:
 
 def tsym_from_internal(instrument: str) -> str:
     """
-    Convert internal instrument (e.g., NIFTYyymmddC26150) to Flattrade tsym NIFTYddMONyyC26150 using EXPIRY_DATE.
+    Convert internal instrument (e.g., NIFTYyymmddC26150) to Flattrade tsym NIFTYddMONyyC26150 using embedded yymmdd.
     """
     m = re.fullmatch(r'^([A-Z]+)(\d{6})([CP])(\d+)$', instrument)
     if not m:
         return instrument
     sym, yymmdd, opt, strike = m.groups()
-    # FIX: derive ddMONyy from the instrument's embedded yymmdd rather than global EXPIRY_DATE for accuracy
     try:
         dt = datetime.datetime.strptime(yymmdd, "%y%m%d")
     except Exception:
@@ -341,22 +317,17 @@ def parse_ft_tsym_to_internal(tsym: str, expiry_yymmdd: str) -> Optional[str]:
 
 # =====================
 # UPSTOX HELPERS (option chain)
-# These must be present before main_loop
 # =====================
 
 def upstox_refresh_access_token() -> Optional[str]:
-    """
-    Refresh Upstox access token using OAuth2 refresh_token flow (if credentials are set).
-    Returns new access_token or None.
-    """
-    if not (UPSTOX_CLIENT_ID and UPSTOX_CLIENT_SECRET and UPSTOX_REFRESH_TOKEN):
+    if not (UPSTOX_CLIENT_ID and UPSTOX_CLIENT_SECRET and os.getenv("UPSTOX_REFRESH_TOKEN")):
         print(f"[{nowstr()}] ⚠️ Upstox refresh skipped: missing client/secret/refresh_token")
         return None
     data = {
         "grant_type": "refresh_token",
         "client_id": UPSTOX_CLIENT_ID,
         "client_secret": UPSTOX_CLIENT_SECRET,
-        "refresh_token": UPSTOX_REFRESH_TOKEN,
+        "refresh_token": os.getenv("UPSTOX_REFRESH_TOKEN"),
     }
     try:
         r = requests.post(UPSTOX_TOKEN_URL, data=data, timeout=15)
@@ -369,7 +340,7 @@ def upstox_refresh_access_token() -> Optional[str]:
     try:
         payload = r.json()
     except Exception:
-        print(f"[{nowstr()}] ⚠️ Upstox refresh non-JSON: {r.text[:200]}")
+        print(f"[{nowstr()}] ⚠️ Upstox non-JSON payload: {r.text[:200]}")
         return None
     access_token = payload.get("access_token")
     if not access_token:
@@ -388,7 +359,6 @@ def get_option_chain_from_upstox(expiry_date: str) -> List[dict]:
             headers["Authorization"] = f"Bearer {tok}"
         return requests.get(UPSTOX_URL, params=params, headers=headers, timeout=10)
 
-    # First attempt
     tok = UPSTOX_ACCESS_TOKEN or None
     try:
         resp = do_call(tok)
@@ -396,7 +366,6 @@ def get_option_chain_from_upstox(expiry_date: str) -> List[dict]:
         print(f"[{nowstr()}] ⚠️ Upstox connection error: {e}")
         return []
 
-    # If token invalid, try refresh once if creds are provided
     if resp.status_code == 401:
         print(f"[{nowstr()}] ⚠️ Upstox 401: attempting token refresh...")
         new_tok = upstox_refresh_access_token()
@@ -492,44 +461,26 @@ def get_leg_ltp_from_chain(data, strike, opt_type):
         return ltp
     return 0.0
 
-# =====================
-# Dynamic expiry probe (added – preserves all original logic; only augments expiry handling)
-# =====================
-
 def find_nearest_expiry_by_probe(max_days: int = 14) -> Optional[str]:
-    """
-    Probe upcoming business days (default window = max_days) and return the first
-    expiry date (YYYY-MM-DD) for which the Upstox option chain API returns a non-empty list.
-    Returns None if no expiry found within the window.
-    """
     today = datetime.date.today()
     for i in range(0, max_days + 1):
         d = today + datetime.timedelta(days=i)
-        if d.weekday() >= 5:  # skip Saturday(5) & Sunday(6)
+        if d.weekday() >= 5:
             continue
         expiry = d.strftime("%Y-%m-%d")
         try:
             data = get_option_chain_from_upstox(expiry)
             if isinstance(data, list) and len(data) > 0:
                 return expiry
-        except requests.HTTPError as e:
-            if e.response is not None and e.response.status_code in (400, 404):
-                continue
-            continue
         except Exception:
             continue
     return None
 
 # =====================
-# STRATEGY MTM / ACCOUNT MTM helpers (must be present before main loop)
+# MTM / STRATEGY HELPERS
 # =====================
 
 def compute_leg_mtm_from_rows(ctx: "StrategyContext", rows: List[Dict[str, Any]]) -> Tuple[float, float]:
-    """
-    Find CE and PE rows corresponding to the context's instruments and return
-    (ce_mtm, pe_mtm) where each is rpnl + urmtom (urmtom assumed already adjusted).
-    Returns 0.0 for a leg if row not found.
-    """
     ce_mtm = 0.0
     pe_mtm = 0.0
     ce_instr = build_option_symbol(SYMBOL, SELECTED_EXPIRY, ctx.ce_strike, "C") if ctx.ce_strike else None
@@ -554,11 +505,151 @@ def compute_leg_mtm_from_rows(ctx: "StrategyContext", rows: List[Dict[str, Any]]
             continue
     return ce_mtm, pe_mtm
 
+def _detect_option_type_from_tsym(ts: str) -> Optional[str]:
+    if not ts:
+        return None
+    m = re.search(r'(CE|PE|C|P)(\d{3,6})$', ts, flags=re.IGNORECASE)
+    if not m:
+        return None
+    op = m.group(1).upper()
+    if op.startswith('C'):
+        return "C"
+    if op.startswith('P'):
+        return "P"
+    return None
+
+def _our_net_for_tsym(ctx: "StrategyContext", tsym: str) -> int:
+    if not tsym:
+        return 0
+    try:
+        tb = ft_get_trade_book()
+        net = 0
+        for t in tb:
+            oid = str(t.get("norenordno") or t.get("orderid") or "")
+            if not oid or oid not in ctx.our_order_ids:
+                continue
+            ts = str(t.get("tsym", "")).upper()
+            if ts != str(tsym).upper():
+                continue
+            trantype = str(t.get("trantype", "")).upper()
+            qty = int(float(t.get("qty") or t.get("fillshares") or t.get("fillQty") or 0))
+            if trantype == "B":
+                net += qty
+            elif trantype == "S":
+                net -= qty
+        return net
+    except Exception:
+        return 0
+
+def _instrument_to_tsym(ctx: "StrategyContext", instrument: str) -> str:
+    return ctx.tsym_map.get(instrument) or tsym_from_internal(instrument)
+
+def _instrument_to_strike_and_opt(instrument: str) -> Tuple[Optional[int], Optional[str]]:
+    try:
+        m = re.fullmatch(r'^([A-Z]+)(\d{6})([CP])(\d+)$', instrument)
+        if not m: return None, None
+        opt = m.group(3)
+        strike = int(m.group(4))
+        return strike, opt
+    except Exception:
+        return None, None
+
+def broker_mtm_for_ctx(ctx: "StrategyContext", chain_data: Optional[List[dict]] = None) -> Tuple[float, float, float, List[Dict[str, Any]]]:
+    """
+    Returns (total_mtm, sum_rpnl, sum_ur, rows[]) scoped to this context.
+    If ISOLATE_BY_OUR_ORDERS is True, builds rows from ctx.positions only using Upstox LTP,
+    ignoring account-wide PositionBook to avoid mixing other strategies.
+    """
+    rows: List[Dict[str, Any]] = []
+
+    if ISOLATE_BY_OUR_ORDERS:
+        sum_rpnl = 0.0
+        sum_ur = 0.0
+        lot_size = get_lot_size(SYMBOL)
+        for instrument, pos in ctx.positions.items():
+            try:
+                tsym = str(_instrument_to_tsym(ctx, instrument)).upper()
+                strike, opt = _instrument_to_strike_and_opt(instrument)
+                opt_letter = "C" if opt == "C" else "P"
+                ltp = get_leg_ltp_from_chain(chain_data or [], strike, opt_letter) if strike else 0.0
+                entry_price = float(pos.get("entry_price") or 0.0)
+                qty_lots = int(pos.get("quantity") or STRADDLE_LOTS)
+                qty_units = qty_lots * lot_size
+                netqty = -qty_units if pos.get("side") == "S" else qty_units
+                ur = (entry_price - ltp) * qty_units if pos.get("side") == "S" else (ltp - entry_price) * qty_units
+                rows.append({"tsym": tsym, "netqty": netqty, "rpnl": 0.0, "urmtom": ur})
+                sum_ur += ur
+            except Exception:
+                continue
+        total_mtm = sum_rpnl + sum_ur
+        return total_mtm, sum_rpnl, sum_ur, rows
+
+    # Default: PositionBook mode (account-wide)
+    pb = flattrade_fetch_positionbook()
+    if not pb:
+        return 0.0, 0.0, 0.0, rows
+
+    wanted_tsyms = set()
+    for internal in (set(ctx.positions.keys()) | ctx.ledger):
+        ts = ctx.tsym_map.get(internal)
+        if not ts:
+            try:
+                ts = tsym_from_internal(internal)
+            except Exception:
+                ts = None
+        if ts:
+            wanted_tsyms.add(str(ts).upper())
+
+    sum_rpnl = 0.0
+    sum_ur = 0.0
+    for row in pb:
+        try:
+            ts = str(row.get("tsym", "")).upper()
+            if ts not in wanted_tsyms:
+                continue
+            rpnl = float(row.get("rpnl", 0.0))
+            netqty = int(float(row.get("netqty", 0)))
+            ur = float(row.get("urmtom", 0.0)) if netqty != 0 else 0.0
+            rows.append({"tsym": ts, "netqty": netqty, "rpnl": rpnl, "urmtom": ur})
+            sum_rpnl += rpnl
+            sum_ur += ur
+        except Exception:
+            continue
+    return sum_rpnl + sum_ur, sum_rpnl, sum_ur, rows
+
 def compute_strategy_mtms(ctx: "StrategyContext") -> Tuple[float, float]:
     """
-    Compute CE_total and PE_total across PositionBook rows for the strategy's scoped instruments.
-    Includes running + closed positions. Subtracts baseline when configured.
+    Compute CE_total and PE_total for the strategy.
+    When ISOLATE_BY_OUR_ORDERS is True, compute from ctx.positions only using Upstox LTP,
+    ignoring account-wide PositionBook (prevents mixing other strategies).
     """
+    if ISOLATE_BY_OUR_ORDERS:
+        try:
+            data = get_option_chain_from_upstox(SELECTED_EXPIRY)
+        except Exception:
+            data = []
+        ce_total = 0.0
+        pe_total = 0.0
+        lot_size = get_lot_size(SYMBOL)
+        for instrument, pos in ctx.positions.items():
+            try:
+                strike, opt = _instrument_to_strike_and_opt(instrument)
+                if strike is None or opt is None:
+                    continue
+                opt_letter = "C" if opt == "C" else "P"
+                ltp = get_leg_ltp_from_chain(data, strike, opt_letter)
+                entry = float(pos.get("entry_price") or 0.0)
+                qty_units = int(pos.get("quantity") or STRADDLE_LOTS) * lot_size
+                pnl = (entry - ltp) * qty_units if pos.get("side") == "S" else (ltp - entry) * qty_units
+                if opt_letter == "C":
+                    ce_total += pnl
+                else:
+                    pe_total += pnl
+            except Exception:
+                continue
+        return ce_total, pe_total
+
+    # Default: PositionBook mode (account-wide)
     global BASELINE_PB_MAP
     pb = flattrade_fetch_positionbook()
     if not pb:
@@ -618,9 +709,6 @@ def compute_strategy_mtms(ctx: "StrategyContext") -> Tuple[float, float]:
     return ce_total, pe_total
 
 def compute_account_total_mtm() -> float:
-    """
-    Sum rpnl + urmtom for all rows in PositionBook (account-wide).
-    """
     pb = flattrade_fetch_positionbook()
     if not pb:
         return 0.0
@@ -635,32 +723,8 @@ def compute_account_total_mtm() -> float:
             continue
     return total
 
-# --------------------
-# Helper: detect option type from tsym
-# --------------------
-def _detect_option_type_from_tsym(ts: str) -> Optional[str]:
-    """
-    Return "C" or "P" if tsym indicates call/put. Uses regex to match CE/PE or single C/P before the strike digits.
-    Examples matched:
-      - NIFTY04NOV25C25750  -> "C"
-      - NIFTY04NOV25CE25750 -> "C"
-      - NIFTY04NOV25PE25750 -> "P"
-      - NIFTY04NOV25P25750  -> "P"
-    """
-    if not ts:
-        return None
-    m = re.search(r'(CE|PE|C|P)(\d{3,6})$', ts, flags=re.IGNORECASE)
-    if not m:
-        return None
-    op = m.group(1).upper()
-    if op.startswith('C'):
-        return "C"
-    if op.startswith('P'):
-        return "P"
-    return None
-
 # =====================
-# Verify / Safety helpers (used by StrategyContext)
+# Verify / Safety helpers
 # =====================
 
 def _broker_netqty_for_tsym(tsym: str) -> int:
@@ -681,10 +745,6 @@ def _broker_netqty_for_tsym(tsym: str) -> int:
         pass
     return 0
 
-# =====================
-# OUR-ORDERS TRACKING (by norenordno) — robust against multi-strategy conflicts
-# =====================
-
 def _extract_order_id_from_resp(raw: dict) -> Optional[str]:
     try:
         oid = raw.get("norenordno") or raw.get("orderid")
@@ -692,84 +752,11 @@ def _extract_order_id_from_resp(raw: dict) -> Optional[str]:
     except Exception:
         return None
 
-def _our_net_for_tsym(ctx: "StrategyContext", tsym: str) -> int:
-    """
-    Sum our TradeBook fills for this tsym using our known order IDs.
-    Sells subtract qty, buys add qty. Returns net units (not lots).
-    """
-    if not tsym:
-        return 0
-    try:
-        tb = ft_get_trade_book()
-        net = 0
-        for t in tb:
-            oid = str(t.get("norenordno") or t.get("orderid") or "")
-            if not oid or oid not in ctx.our_order_ids:
-                continue
-            ts = str(t.get("tsym", "")).upper()
-            if ts != str(tsym).upper():
-                continue
-            trantype = str(t.get("trantype", "")).upper()
-            qty = int(float(t.get("qty") or t.get("fillshares") or t.get("fillQty") or 0))
-            if trantype == "B":
-                net += qty
-            elif trantype == "S":
-                net -= qty
-        return net
-    except Exception:
-        return 0
-
 # =====================
-# BROKER MTM (PositionBook) scoped to this strategy
-# Provides the broker-truth MTM rows used by logging
-# =====================
-
-def broker_mtm_for_ctx(ctx: "StrategyContext") -> Tuple[float, float, float, List[Dict[str, Any]]]:
-    """
-    Returns (total_mtm, sum_rpnl, sum_ur, rows[]) scoped to this context's instruments.
-    Each row: {tsym, netqty, rpnl, urmtom}.
-    """
-    pb = flattrade_fetch_positionbook()
-    rows: List[Dict[str, Any]] = []
-    if not pb:
-        return 0.0, 0.0, 0.0, rows
-
-    wanted_tsyms = set()
-    for internal in (set(ctx.positions.keys()) | ctx.ledger):
-        ts = ctx.tsym_map.get(internal)
-        if not ts:
-            try:
-                ts = tsym_from_internal(internal)
-            except Exception:
-                ts = None
-        if ts:
-            wanted_tsyms.add(str(ts).upper())
-
-    sum_rpnl = 0.0
-    sum_ur = 0.0
-    for row in pb:
-        try:
-            ts = str(row.get("tsym", "")).upper()
-            if ts not in wanted_tsyms:
-                continue
-            rpnl = float(row.get("rpnl", 0.0))
-            netqty = int(float(row.get("netqty", 0)))
-            ur = float(row.get("urmtom", 0.0)) if netqty != 0 else 0.0
-            rows.append({"tsym": ts, "netqty": netqty, "rpnl": rpnl, "urmtom": ur})
-            sum_rpnl += rpnl
-            sum_ur += ur
-        except Exception:
-            continue
-    return sum_rpnl + sum_ur, sum_rpnl, sum_ur, rows
-
-# =====================
-# BROKER SEND HELPERS (Flattrade) - return raw resp for inspection
+# BROKER SEND HELPERS (Flattrade)
 # =====================
 
 def flattrade_response_to_tuple(resp: dict) -> Tuple[bool, Optional[int], str, dict]:
-    """
-    Returns (ok, status_placeholder, text_message, raw_resp_dict)
-    """
     ok = isinstance(resp, dict) and resp.get("stat") == "Ok"
     text = ""
     if isinstance(resp, dict):
@@ -786,6 +773,7 @@ def broker_send_sell(_unused_webhook_url: str, instrument: str, lots: int, label
     qty_units = max(1, int(lots) * get_lot_size(SYMBOL))
     resp = flattrade_place_order(tsym=tsym, qty_units=qty_units, trantype="S", prctyp="MKT", prc=None, label=label)
     ok, status, text, raw = flattrade_response_to_tuple(resp)
+    oid_entry = _extract_order_id_from_resp(raw or {})
     return (ok, status, text, raw), tsym
 
 def broker_send_buy(_unused_webhook_url: str, instrument: str, lots: int, label: str):
@@ -793,6 +781,7 @@ def broker_send_buy(_unused_webhook_url: str, instrument: str, lots: int, label:
     qty_units = max(1, int(lots) * get_lot_size(SYMBOL))
     resp = flattrade_place_order(tsym=tsym, qty_units=qty_units, trantype="B", prctyp="MKT", prc=None, label=label)
     ok, status, text, raw = flattrade_response_to_tuple(resp)
+    oid_exit = _extract_order_id_from_resp(raw or {})
     return (ok, status, text, raw), tsym
 
 # =====================
@@ -812,8 +801,7 @@ def log_change_line(ctx_pct: float, ce_change: float, pe_change: float) -> str:
     return f"[{nowstr()}] [PCT={ctx_pct:g}%] 🔍 CE Change={ce_change:+.2f}% | PE Change={pe_change:+.2f}%"
 
 # =====================
-# STRATEGY CONTEXT (preserved, added terminated flag)
-# All logic preserved; only small, well-scoped safety additions were placed above.
+# STRATEGY CONTEXT
 # =====================
 
 class StrategyContext:
@@ -829,9 +817,7 @@ class StrategyContext:
         self.positions: Dict[str, Dict[str, Any]] = {}
         self.ledger: set[str] = set()
         self.tsym_map: Dict[str, str] = {}
-        # NEW: when True, the context will not enter again for this run (stop/target hit)
         self.terminated: bool = False
-        # NEW: robust multi-strategy isolation — track our order IDs (norenordno)
         self.our_order_ids: set[str] = set()
 
     def log(self, msg: str): print(msg)
@@ -850,34 +836,27 @@ class StrategyContext:
 
     def handle_margin_shortfall(self, reason_text: str, raw_resp: Optional[dict] = None):
         """
-        Called when an order failure indicates a margin shortfall.
-        Terminates the context for the day and attempts a best-effort one-shot exit
-        of all known positions using broker_send_buy (no retry loops).
+        Margin shortfall: exit all known positions and terminate this context for the day.
         """
         try:
-            self.log(f"[{nowstr()}] [PCT={self.trigger_pct:g}%] ❌ Margin shortfall detected: {reason_text}. Initiating emergency exit of all strategy positions and terminating context for the day.")
+            self.log(f"[{nowstr()}] [PCT={self.trigger_pct:g}%] ❌ Margin shortfall detected: {reason_text}. Exiting all strategy positions; terminating context for the day.")
             self.log(f"[{nowstr()}] [PCT={self.trigger_pct:g}%] 🔍 Full broker response: {raw_resp}")
-            # Mark terminated so no new entries will be attempted
             self.terminated = True
-            # Attempt one-shot exits for all known positions (best-effort)
             for instr in list(self.positions.keys()):
                 try:
                     qty = self.positions.get(instr, {}).get("quantity", STRADDLE_LOTS)
                     (ok_exit, _, text_exit, raw_exit), tsym = broker_send_buy(self.webhook_url, instr, qty, label="margin-exit")
-                    # Track our exit order ID if present
                     oid_exit = _extract_order_id_from_resp(raw_exit or {})
                     if oid_exit:
                         self.our_order_ids.add(oid_exit)
                     if ok_exit:
                         self.log(f"[{nowstr()}] [PCT={self.trigger_pct:g}%] ✅ Emergency exit placed for {instr} (tsym={tsym}).")
-                        # remove local tracking for this instrument
                         self.positions.pop(instr, None)
                         self.ledger.add(instr)
                     else:
                         self.log(f"[{nowstr()}] [PCT={self.trigger_pct:g}%] ⚠️ Emergency exit FAILED for {instr}: {text_exit} | raw={raw_exit}")
                 except Exception as e:
                     self.log(f"[{nowstr()}] [PCT={self.trigger_pct:g}%] ⚠️ Exception while emergency exiting {instr}: {e}")
-            # clear strikes/baselines for safety
             self.ce_strike = None
             self.pe_strike = None
             self.ce_entry_price = None
@@ -887,33 +866,23 @@ class StrategyContext:
             self.log(f"[{nowstr()}] [PCT={self.trigger_pct:g}%] ⚠️ Error in handle_margin_shortfall: {e}")
 
     def exit_instrument_until_success(self, instrument: str, entry_price_for_mtm: Optional[float] = None, label: str = "exit"):
-        """
-        Before placing a buy (exit) order, check our TradeBook net for that instrument's tsym.
-        If our_net == 0 for that tsym, treat as already closed and clean local state without placing a buy.
-        This prevents creating an unintended buy if the leg was never filled or already closed elsewhere.
-        """
-        # resolve tsym as broker sees it
         tsym = self.tsym_map.get(instrument) or tsym_from_internal(instrument)
-        # Use our own TradeBook-based net to decide
         our_net_units = _our_net_for_tsym(self, tsym) if tsym else 0
         if our_net_units == 0:
-            # already flat on our orders; update local state and return
             self.positions.pop(instrument, None)
             self.ledger.add(instrument)
             if instrument.endswith("C"):
                 self.ce_strike = None; self.ce_entry_price = None
             elif instrument.endswith("P"):
                 self.pe_strike = None; self.pe_entry_price = None
-            self.log(f"[{nowstr()}] [PCT={self.trigger_pct:g}%] ℹ️ Our net=0 for {tsym}; skipping exit order and clearing local tracking.")
+            self.log(f"[{nowstr()}] [PCT={self.trigger_pct:g}%] ℹ️ Our net=0 for {tsym}; skipping exit and clearing local tracking.")
             return True
 
-        # Exit only our own net; convert units to lots
         lot_size = get_lot_size(SYMBOL)
         exit_lots = max(1, int(abs(our_net_units) // lot_size))
         attempt = 1
         while True:
             (ok, status, text, raw), tsym_resp = broker_send_buy(self.webhook_url, instrument, exit_lots, f"{label} (attempt {attempt})")
-            # Track our exit order ID if present
             oid_exit = _extract_order_id_from_resp(raw or {})
             if oid_exit:
                 self.our_order_ids.add(oid_exit)
@@ -926,7 +895,6 @@ class StrategyContext:
                 self.tsym_map[instrument] = tsym_resp
                 self.ledger.add(instrument)
                 return True
-            # detect margin-like errors and abort by exiting all positions
             if raw and _is_margin_error(raw):
                 self.handle_margin_shortfall(_extract_broker_message(raw), raw)
                 return False
@@ -944,7 +912,6 @@ class StrategyContext:
         attempt = 1
         while True:
             (ok, status, text, raw), tsym = broker_send_sell(self.webhook_url, instrument, lots, f"{label} (attempt {attempt})")
-            # Track our entry order ID if present
             oid_entry = _extract_order_id_from_resp(raw or {})
             if oid_entry:
                 self.our_order_ids.add(oid_entry)
@@ -958,7 +925,6 @@ class StrategyContext:
                 self.tsym_map[instrument] = tsym
                 self.ledger.add(instrument)
                 return True
-            # detect margin-like errors and abort by exiting all positions
             if raw and _is_margin_error(raw):
                 self.handle_margin_shortfall(_extract_broker_message(raw), raw)
                 return False
@@ -975,7 +941,6 @@ class StrategyContext:
             pe_instr = build_option_symbol(SYMBOL, expiry_raw, pe_strike, "P")
             (ok_ce, _, text_ce, raw_ce), tsym_ce = broker_send_sell(self.webhook_url, ce_instr, lots, f"entry-straddle-CE (attempt {attempt})")
             (ok_pe, _, text_pe, raw_pe), tsym_pe = broker_send_sell(self.webhook_url, pe_instr, lots, f"entry-straddle-PE (attempt {attempt})")
-            # Track our entry order IDs if present
             oid_ce = _extract_order_id_from_resp(raw_ce or {})
             oid_pe = _extract_order_id_from_resp(raw_pe or {})
             if oid_ce:
@@ -991,7 +956,6 @@ class StrategyContext:
                 self.tsym_map[pe_instr] = tsym_pe
                 self.ledger.add(ce_instr); self.ledger.add(pe_instr)
                 return True
-            # If either returned a margin error, terminate and emergency-exit
             combined_raw = {}
             if isinstance(raw_ce, dict):
                 combined_raw.update(raw_ce)
@@ -999,7 +963,6 @@ class StrategyContext:
                 combined_raw.update(raw_pe)
             combined_text = " ".join(filter(None, [str(text_ce or ""), str(text_pe or "")]))
             if (combined_raw and _is_margin_error(combined_raw)) or (combined_text and _is_margin_error(combined_text)):
-                # prefer raw if available
                 self.handle_margin_shortfall(_extract_broker_message(combined_raw) or _extract_broker_message(combined_text), combined_raw or None)
                 return False
             self.log(f"[{nowstr()}] [PCT={self.trigger_pct:g}%] ❌ entry-straddle failed; retrying in 3s... (CE:{text_ce} | PE:{text_pe})")
@@ -1014,51 +977,35 @@ def verify_entry_and_squareoff_if_needed(ctx: "StrategyContext", ce_internal: st
     Verify our TradeBook shows expected net units (negative for short) for CE and PE after an attempted entry.
     If either leg is not at exact expected short size, emergency-exit any filled legs, mark ctx.terminated and return False.
     Otherwise return True.
-
-    This verification is based ONLY on our order IDs (norenordno) and is robust against other strategies/products.
     """
     try:
-        # resolve Flattrade tsym names once
-        ts_ce = str(ctx.tsym_map.get(ce_internal) or tsym_from_internal(ce_internal)).upper() if ce_internal else None
-        ts_pe = str(ctx.tsym_map.get(pe_internal) or tsym_from_internal(pe_internal)).upper() if pe_internal else None
+        ts_ce = str(_instrument_to_tsym(ctx, ce_internal)).upper() if ce_internal else None
+        ts_pe = str(_instrument_to_tsym(ctx, pe_internal)).upper() if pe_internal else None
 
-        # expected absolute units per leg (short = negative)
         expected_units = -int(STRADDLE_LOTS) * int(get_lot_size(SYMBOL))
 
-        # poll for a short window to allow broker to reflect our TradeBook fills
         deadline = time.time() + max(1.0, float(wait_seconds))
-        last_ce = last_pe = None
         while time.time() < deadline:
             net_ce = _our_net_for_tsym(ctx, ts_ce) if ts_ce else 0
             net_pe = _our_net_for_tsym(ctx, ts_pe) if ts_pe else 0
-            last_ce, last_pe = net_ce, net_pe
             if net_ce == expected_units and net_pe == expected_units:
                 return True
             time.sleep(0.3)
 
-        # Final read after polling
         net_ce = _our_net_for_tsym(ctx, ts_ce) if ts_ce else 0
         net_pe = _our_net_for_tsym(ctx, ts_pe) if ts_pe else 0
 
-        # If either leg is not at the exact expected short size, treat as failed entry.
         if net_ce != expected_units or net_pe != expected_units:
-            ctx.log(f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ⚠️ Entry verification mismatch (our orders):"
-                    f" CE our_net={net_ce} (exp {expected_units}) | PE our_net={net_pe} (exp {expected_units})."
-                    f" Emergency square-off of any filled legs.")
-            ctx.log_to_file(logfile_path,
-                f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ⚠️ Entry verification mismatch (our orders):"
-                f" CE our_net={net_ce} (exp {expected_units}) | PE our_net={net_pe} (exp {expected_units})."
-                f" Emergency square-off of any filled legs.")
+            ctx.log(f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ⚠️ Entry verification mismatch (our orders): CE our_net={net_ce} (exp {expected_units}) | PE our_net={net_pe} (exp {expected_units}). Emergency square-off.")
+            ctx.log_to_file(logfile_path, f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ⚠️ Entry verification mismatch (our orders).")
 
-            # emergency exit any partially-filled positions belonging to this context
             for instr in list(ctx.positions.keys()):
                 try:
                     ctx.exit_instrument_until_success(instr, label="entry-mismatch-exit")
                 except Exception as e:
                     ctx.log(f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ⚠️ Emergency exit failed for {instr}: {e}")
-                    ctx.log_to_file(logfile_path, f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ⚠️ Emergency exit failed for {instr}: {e}")
+                    ctx.log_to_file(logfile_path, f"[{nowstr()}] ⚠️ Emergency exit failed for {instr}: {e}")
 
-            # clear local state and prevent re-entry
             ctx.in_position = False
             ctx.ce_strike = ctx.pe_strike = None
             ctx.ce_entry_price = ctx.pe_entry_price = None
@@ -1067,12 +1014,60 @@ def verify_entry_and_squareoff_if_needed(ctx: "StrategyContext", ce_internal: st
             ctx.log_to_file(logfile_path, f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ℹ️ Context terminated for the day after entry mismatch.")
             return False
 
-        # exact match
         return True
 
     except Exception as ex:
         ctx.log(f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ⚠️ Exception during entry verification: {ex}")
-        ctx.log_to_file(logfile_path, f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ⚠️ Exception during entry verification: {ex}")
+        ctx.log_to_file(logfile_path, f"[{nowstr()}] ⚠️ Exception during entry verification: {ex}")
+        return False
+
+# =====================
+# NEUTRALITY GUARD — auto-close remaining leg if one leg becomes flat
+# =====================
+
+def enforce_neutrality_or_squareoff(ctx: "StrategyContext", logfile_path: str) -> bool:
+    """
+    Ensure both legs are active while strategy is in_position.
+    If exactly one leg becomes flat (net=0 on our TradeBook), auto-close the other leg too.
+    Returns True if it performed any exit, else False.
+    """
+    try:
+        if not ctx.in_position:
+            return False
+
+        ce_internal = build_option_symbol(SYMBOL, SELECTED_EXPIRY, ctx.ce_strike, "C") if ctx.ce_strike else None
+        pe_internal = build_option_symbol(SYMBOL, SELECTED_EXPIRY, ctx.pe_strike, "P") if ctx.pe_strike else None
+        ts_ce = str(_instrument_to_tsym(ctx, ce_internal)).upper() if ce_internal else None
+        ts_pe = str(_instrument_to_tsym(ctx, pe_internal)).upper() if pe_internal else None
+
+        net_ce = _our_net_for_tsym(ctx, ts_ce) if ts_ce else 0
+        net_pe = _our_net_for_tsym(ctx, ts_pe) if ts_pe else 0
+
+        ce_flat = (net_ce == 0)
+        pe_flat = (net_pe == 0)
+
+        # Exactly one leg flat -> close the other leg to restore neutrality (flat)
+        if ce_flat ^ pe_flat:
+            remaining_instr = pe_internal if ce_flat else ce_internal
+            which = "PE" if ce_flat else "CE"
+            msg = f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] 🛑 Neutrality guard: {('CE' if ce_flat else 'PE')} leg is flat; auto-closing remaining {which} leg."
+            ctx.log(msg); ctx.log_to_file(logfile_path, msg)
+            ctx.exit_instrument_until_success(remaining_instr, label="neutrality-exit")
+
+            # Clear local state
+            ctx.in_position = False
+            ctx.ce_strike = None; ctx.ce_entry_price = None
+            ctx.pe_strike = None; ctx.pe_entry_price = None
+
+            info = f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ℹ️ Both legs flat after neutrality guard. Strategy will consider re-entry on next cycle."
+            ctx.log(info); ctx.log_to_file(logfile_path, info)
+            return True
+
+        return False
+
+    except Exception as e:
+        ctx.log(f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ⚠️ Neutrality guard error: {e}")
+        ctx.log_to_file(logfile_path, f"[{nowstr()}] ⚠️ Neutrality guard error: {e}")
         return False
 
 # =====================
@@ -1111,7 +1106,6 @@ def main_loop(strategies_config: List[StrategyContext]):
                 for row in pb_init:
                     try:
                         ts = str(row.get("tsym", "")).upper()
-                        # Only baseline instrument rows that pertain to the SYMBOL to avoid unrelated instruments
                         if not ts.startswith(SYMBOL.upper()):
                             continue
                         rpnl = float(row.get("rpnl", 0.0))
@@ -1172,35 +1166,37 @@ def main_loop(strategies_config: List[StrategyContext]):
                         ctx.log(msg); ctx.log_to_file(logfile_path, msg)
                         ce0 = get_leg_ltp_from_chain(data, atm_strike, "C")
                         pe0 = get_leg_ltp_from_chain(data, atm_strike, "P")
-                        # attempt entry using the dynamically selected expiry
                         ctx.enter_straddle_until_success(atm_strike, atm_strike, NEAREST_EXPIRY, ce_entry_price=ce0, pe_entry_price=pe0, lots=STRADDLE_LOTS)
                         ctx.last_roll_time = now
                         ctx.in_position = True
-                        # verify both legs filled; if not, emergency-squareoff and terminate context
                         ce_instr = build_option_symbol(SYMBOL, SELECTED_EXPIRY, atm_strike, "C")
                         pe_instr = build_option_symbol(SYMBOL, SELECTED_EXPIRY, atm_strike, "P")
                         ok = verify_entry_and_squareoff_if_needed(ctx, ce_instr, pe_instr, logfile_path, wait_seconds=1.0)
                         if not ok:
-                            # verification handled emergency exit and termination
                             continue
                         write_logfile_entry(logfile_path, "\n\n")
+                        continue
+
+                    # Neutrality guard — if one leg flat, auto-close the other leg
+                    if ctx.in_position and enforce_neutrality_or_squareoff(ctx, logfile_path):
+                        # neutrality guard performed exit and cleared state
                         continue
 
                     # Current LTPs for held legs (context)
                     ce_ltp = get_leg_ltp_from_chain(data, ctx.ce_strike, "C") if ctx.ce_strike else 0.0
                     pe_ltp = get_leg_ltp_from_chain(data, ctx.pe_strike, "P") if ctx.pe_strike else 0.0
 
-                    # Broker-truth MTM details (running positions)
-                    total_mtm, sum_rpnl, sum_ur, rows = broker_mtm_for_ctx(ctx)
+                    # Broker-truth MTM details (running positions) — isolated by our orders if flag is True
+                    total_mtm, sum_rpnl, sum_ur, rows = broker_mtm_for_ctx(ctx, chain_data=data)
 
-                    # STRATEGY MTM: includes running positions + closed positions for strategy-scoped instruments
+                    # STRATEGY MTM (isolated when flag is True)
                     strat_ce_total, strat_pe_total = compute_strategy_mtms(ctx)
                     strat_total = strat_ce_total + strat_pe_total
 
                     # ACCOUNT TOTAL MTM (all positions in account)
                     account_total = compute_account_total_mtm()
 
-                    # Print Strategy MTM and TOTAL MTM lines (Strategy first, then TOTAL)
+                    # Print Strategy MTM and TOTAL MTM lines
                     strat_line = f"Strategy MTM = CE {strat_ce_total:.2f} + PE {strat_pe_total:.2f} = {strat_total:.2f}"
                     print(strat_line); write_logfile_entry(logfile_path, strat_line + "\n")
                     total_line = f"TOTAL MTM = {account_total:.2f}"
@@ -1220,7 +1216,6 @@ def main_loop(strategies_config: List[StrategyContext]):
                             for r in rows:
                                 line = log_mtm_row(ctx.trigger_pct, r["tsym"], r["netqty"], r["rpnl"], r["urmtom"])
                                 ctx.log(line); ctx.log_to_file(logfile_path, line)
-                        # === two blank lines after each tick ===
                         print(); print()
                         write_logfile_entry(logfile_path, "\n\n")
                     else:
@@ -1237,7 +1232,6 @@ def main_loop(strategies_config: List[StrategyContext]):
                         pe_change = ((pe_ltp - (ctx.pe_entry_price or 0.0)) / (ctx.pe_entry_price or 1.0) * 100.0) if (ctx.pe_entry_price or 0.0) else 0.0
                         l3 = log_change_line(ctx.trigger_pct, ce_change, pe_change)
                         ctx.log(l3); ctx.log_to_file(logfile_path, l3)
-                        # two blank lines for readability
                         print(); print()
                         write_logfile_entry(logfile_path, "\n\n")
 
@@ -1259,7 +1253,6 @@ def main_loop(strategies_config: List[StrategyContext]):
                             ctx.in_position = False
                             ctx.ce_strike = ctx.pe_strike = None
                             ctx.ce_entry_price = ctx.pe_entry_price = None
-                            # NEW: prevent any further entries for this context for the running session
                             ctx.terminated = True
                             ctx.log(f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ℹ️ Context terminated for the day after stoploss on {metric_name}.")
                             ctx.log_to_file(logfile_path, f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ℹ️ Context terminated for the day after stoploss on {metric_name}.")
@@ -1272,13 +1265,12 @@ def main_loop(strategies_config: List[StrategyContext]):
                             ctx.in_position = False
                             ctx.ce_strike = ctx.pe_strike = None
                             ctx.ce_entry_price = ctx.pe_entry_price = None
-                            # NEW: prevent re-entry for this context
                             ctx.terminated = True
                             ctx.log(f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ℹ️ Context terminated for the day after target on {metric_name}.")
                             ctx.log_to_file(logfile_path, f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ℹ️ Context terminated for the day after target on {metric_name}.")
                             continue
 
-                    # Trigger/hold/ATM-change logic (preserved)
+                    # Trigger/hold/ATM-change logic
                     ce_change_pct = ((ce_ltp - (ctx.ce_entry_price or 0.0)) / (ctx.ce_entry_price or 1.0) * 100.0) if (ctx.ce_entry_price or 0.0) else 0.0
                     pe_change_pct = ((pe_ltp - (ctx.pe_entry_price or 0.0)) / (ctx.pe_entry_price or 1.0) * 100.0) if (ctx.pe_entry_price or 0.0) else 0.0
                     triggered_ce = abs(ce_change_pct) >= ctx.trigger_pct
@@ -1355,7 +1347,6 @@ def main_loop(strategies_config: List[StrategyContext]):
                 if ctx.positions:
                     ctx.log(f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] 🛑 Sending manual exit for all positions...")
                     ctx.log_to_file(logfile_path, f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] 🛑 Sending manual exit for all positions...")
-                    # iterate copy because exit_instrument_until_success removes entries as they close
                     for instr in list(ctx.positions.keys()):
                         ctx.exit_instrument_until_success(instr, label="Manual Exit")
             except Exception as e:
@@ -1370,4 +1361,3 @@ if __name__ == "__main__":
         print("No strategies enabled in STRATEGIES — uncomment entries to enable tests.")
     else:
         main_loop(active_contexts)
-
