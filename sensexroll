@@ -23,12 +23,12 @@ STRATEGIES = [
 
 # Symbols, expiry and quantities
 SYMBOL = "SENSEX"
-EXPIRY_DATE = "2025-12-11"   # ISO yyyy-mm-dd (Fallback if auto-pick fails)
-STRADDLE_LOTS = 3            # lots to trade per entry (per leg)
+EXPIRY_DATE = "2025-12-24"   # ISO yyyy-mm-dd (Fallback if auto-pick fails)
+STRADDLE_LOTS = 1            # lots to trade per entry (per leg)
 LOT_SIZE_MAP = {"SENSEX": 20} # units per lot
 
 # Time windows
-START_TIME_STR = "10:45"     # HH:MM 24h
+START_TIME_STR = "09:25"     # HH:MM 24h
 EXIT_TIME_STR  = "15:25"     # HH:MM 24h
 
 # Strategy flags
@@ -59,14 +59,14 @@ SHOW_MTM_ROWS = True         # True: show per-symbol netqty|rpnl|urmtom rows
 # override FT_UID/FT_ACTID/FT_JKEY from flattrade token file if available
 
 # Flattrade credentials (update JKEY daily)
-FT_UID   = "FZ21703"
-FT_ACTID = "FZ21703"
+FT_UID   = "FZ21701"
+FT_ACTID = "FZ21701"
 FT_JKEY  = ""
 
 # override FT_UID/FT_ACTID/FT_JKEY from flattrade token file if available
 try:
     import os, json
-    _tf = os.getenv("FLATTRADE_TOKEN_FILE", "/home/opc/algo/flattrade/prime/Nifty/flattrade_token_headless.json")
+    _tf = os.getenv("FLATTRADE_TOKEN_FILE", "/home/opc/algo/flattrade/test/Nifty/flattrade_token_headless.json")
     with open(_tf, "r", encoding="utf-8") as _f:
         _d = json.load(_f)
     _tr = _d.get("token_response", _d) if isinstance(_d, dict) else {}
@@ -661,45 +661,67 @@ def _broker_netqty_for_tsym(tsym: str) -> int:
 def verify_entry_and_squareoff_if_needed(ctx: "StrategyContext", ce_internal: str, pe_internal: str, logfile_path: str, wait_seconds: float = 1.0) -> bool:
     """
     Verify PositionBook shows expected netqty for CE and PE after an attempted entry.
-    If either leg is not net-short (netqty >= 0), emergency-exit any filled legs,
+    If either leg is not fully net-short (exact expected size), emergency-exit any filled legs,
     mark ctx.terminated and return False. Otherwise return True.
     """
     try:
-        # small wait to allow broker/exchange to reflect status
-        time.sleep(wait_seconds)
-        # resolve Flattrade tsym names
+        # resolve Flattrade tsym names once
         ts_ce = str(ctx.tsym_map.get(ce_internal) or tsym_from_internal(ce_internal)).upper() if ce_internal else None
         ts_pe = str(ctx.tsym_map.get(pe_internal) or tsym_from_internal(pe_internal)).upper() if pe_internal else None
 
+        # expected absolute units per leg (negative for short)
+        expected_units = -int(STRADDLE_LOTS) * int(get_lot_size(SYMBOL))
+
+        # poll for a short window to allow broker to reflect fills
+        deadline = time.time() + max(1.0, float(wait_seconds))
+        last_ce = last_pe = None
+        while time.time() < deadline:
+            net_ce = _broker_netqty_for_tsym(ts_ce) if ts_ce else 0
+            net_pe = _broker_netqty_for_tsym(ts_pe) if ts_pe else 0
+            last_ce, last_pe = net_ce, net_pe
+            if net_ce == expected_units and net_pe == expected_units:
+                return True
+            time.sleep(0.3)
+
+        # Final read after polling
         net_ce = _broker_netqty_for_tsym(ts_ce) if ts_ce else 0
         net_pe = _broker_netqty_for_tsym(ts_pe) if ts_pe else 0
 
-        # expected: both legs netqty < 0 (short)
-        if net_ce >= 0 or net_pe >= 0:
-            # log the mismatch
-            ctx.log(f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ⚠️ Entry verification failed: CE netqty={net_ce} | PE netqty={net_pe}. Emergency square-off of any filled legs.")
-            ctx.log_to_file(logfile_path, f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ⚠️ Entry verification failed: CE netqty={net_ce} | PE netqty={net_pe}. Emergency square-off of any filled legs.")
-            # emergency exit any filled positions that belong to this context
+        # If either leg is not at the exact expected short size, treat as failed entry.
+        if net_ce != expected_units or net_pe != expected_units:
+            msg = (f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ⚠️ Entry verification mismatch:"
+                   f" CE netqty={net_ce} (exp {expected_units}) | PE netqty={net_pe} (exp {expected_units})."
+                   f" Emergency square-off of any filled legs.")
+            ctx.log(msg)
+            ctx.log_to_file(logfile_path, msg)
+
+            # emergency exit any partially-filled positions belonging to this context
             for instr in list(ctx.positions.keys()):
                 try:
-                    ctx.exit_instrument_until_success(instr, label="entry-failed-exit")
+                    ctx.exit_instrument_until_success(instr, label="entry-mismatch-exit")
                 except Exception as e:
-                    ctx.log(f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ⚠️ Emergency exit failed for {instr}: {e}")
-                    ctx.log_to_file(logfile_path, f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ⚠️ Emergency exit failed for {instr}: {e}")
+                    err = f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ⚠️ Emergency exit failed for {instr}: {e}"
+                    ctx.log(err)
+                    ctx.log_to_file(logfile_path, err)
+
             # clear local state and prevent re-entry
             ctx.in_position = False
             ctx.ce_strike = ctx.pe_strike = None
             ctx.ce_entry_price = ctx.pe_entry_price = None
             ctx.terminated = True
-            ctx.log(f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ℹ️ Context terminated for the day after entry mismatch.")
-            ctx.log_to_file(logfile_path, f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ℹ️ Context terminated for the day after entry mismatch.")
-            return False
-        return True
-    except Exception as ex:
-        ctx.log(f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ⚠️ Exception during entry verification: {ex}")
-        ctx.log_to_file(logfile_path, f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ⚠️ Exception during entry verification: {ex}")
-        return False
 
+            fin = f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ℹ️ Context terminated for the day after entry mismatch."
+            ctx.log(fin)
+            ctx.log_to_file(logfile_path, fin)
+            return False
+
+        return True
+
+    except Exception as ex:
+        err = f"[{nowstr()}] [PCT={ctx.trigger_pct:g}%] ⚠️ Exception during entry verification: {ex}"
+        ctx.log(err)
+        ctx.log_to_file(logfile_path, err)
+        return False
 # =====================
 # BROKER MTM (PositionBook) scoped to this strategy
 # Provides the broker-truth MTM rows used by logging
